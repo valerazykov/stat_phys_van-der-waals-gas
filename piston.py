@@ -69,7 +69,7 @@ class Piston:
                          round(0.02 * min(self.coor[2], self.coor[3])))
         pygame.draw.rect(self.screen,
                          (255, 255, 255),
-                         (self.coor[0] + round(0.125 * self.coor[2]) + \
+                         (self.coor[0] + round(0.125 * self.coor[2]) +
                           round(0.02 * min(self.coor[2], self.coor[3])),
                           self.coor[1] + round(0.2 * self.coor[3]),
                           width_piston - 2 * round(0.02 * min(self.coor[2],
@@ -131,7 +131,7 @@ class Piston:
                                                True, 'Black')
             self.screen.blit(text_surface,
                              (self.coor[0] + round(0.85 * self.coor[2]),
-                              self.coor[1] + round((0.675 - t * 0.042) * \
+                              self.coor[1] + round((0.675 - t * 0.042) *
                                                    self.coor[3])))
         # end_temp
         # begin_val
@@ -146,7 +146,7 @@ class Piston:
         y = self.coor[1] + round(0.3 * self.coor[3]) + round(offset)
 
         pygame.draw.rect(self.screen, (70, 70, 70),
-                         (x, y, width_piston - 2 * round(0.02 * \
+                         (x, y, width_piston - 2 * round(0.02 *
                                                          min(self.coor[2],
                                                              self.coor[3])),
                           round(0.02 * min(self.coor[2], self.coor[3]))))
@@ -188,7 +188,7 @@ class Piston:
                                                        self.coor[3])),
                                          round(0.3 * self.coor[3]) + round(
                                              offset)))
-        if (mode_press == 1):
+        if mode_press == 1:
             self.screen.blit(sand_d, (
             self.coor[0] + round(0.125 * self.coor[2]) + round(
                 0.02 * min(self.coor[2],
@@ -202,7 +202,7 @@ class Piston:
             self.coor[0] + round(0.125 * self.coor[2]) + round(
                 0.02 * min(self.coor[2],
                            self.coor[3])),
-            self.coor[1] + round(0.3 * self.coor[3]) - \
+            self.coor[1] + round(0.3 * self.coor[3]) -
             round(0.1 * self.coor[3] * press_part) + round(offset)))
         if mode_press == 0:
             sand = pygame.transform.scale(self.sand,
@@ -216,7 +216,7 @@ class Piston:
                                  0.125 * self.coor[2]) + round(
                                  0.02 * min(self.coor[2], self.coor[3])),
                               self.coor[1] + round(0.3 * self.coor[3]) - round(
-                                  0.1 * self.coor[3] * \
+                                  0.1 * self.coor[3] *
                                   press_part) + round(offset)))
         if mode_press == -1:
             sand_off = pygame.transform.scale(self.sand_off,
@@ -224,13 +224,10 @@ class Piston:
                                                round(0.1 * self.coor[
                                                    3] * press_part)))
             self.screen.blit(sand_off, (
-            self.coor[0] + round(0.125 * self.coor[2]) + round(0.02 * \
-                                                               min(self.coor[
-                                                                       2],
-                                                                   self.coor[
-                                                                       3])),
-            self.coor[1] + round(0.3 * self.coor[3]) - round(0.1 * \
-                                                             self.coor[3] * \
+            self.coor[0] + round(0.125 * self.coor[2]) + round(0.02 *
+                                           min(self.coor[2], self.coor[3])),
+            self.coor[1] + round(0.3 * self.coor[3]) - round(0.1 *
+                                                             self.coor[3] *
                                                              press_part) +
                                                                 round(offset)))
 
@@ -238,15 +235,15 @@ class Piston:
                                             (round(0.0625 * self.coor[2]),
                                              round(0.0625 * self.coor[2])))
             self.screen.blit(backet, (
-            self.coor[0] + round(0.575 * self.coor[2]), self.coor[1] + \
+            self.coor[0] + round(0.575 * self.coor[2]), self.coor[1] +
             round(0.3 * self.coor[3]) + round(offset)))
         # end_press
         pygame.draw.rect(self.screen, (70, 70, 70),
-                         (self.coor[0] + round(0.125 * \
+                         (self.coor[0] + round(0.125 *
                                                self.coor[2]) + round(
                              0.02 * min(self.coor[2],
                                         self.coor[3])),
-                          self.coor[1] + round(0.3 * self.coor[3]) - \
+                          self.coor[1] + round(0.3 * self.coor[3]) -
                           round(0.02 * min(self.coor[2], self.coor[3])),
                           round(0.02 * min(self.coor[2], self.coor[3])),
                           round(0.02 * min(self.coor[2], self.coor[3]))))
@@ -254,11 +251,9 @@ class Piston:
             pygame.draw.rect(self.screen, (70, 70, 70), (
                 self.coor[0] + round(
                     0.125 * self.coor[2]) + width_piston - 2 * round(0.02 *
-                                                             min(
-                                                                self.coor[2],
-                                                                self.coor[3])),
-                self.coor[1] + round(0.3 * self.coor[3]) - round(
-                    0.02 * min(self.coor[2], self.coor[3])),
+                                            min(self.coor[2], self.coor[3])),
+                self.coor[1] + round(0.3 * self.coor[3]) -
+                round(0.02 * min(self.coor[2], self.coor[3])),
                 round(0.02 * min(self.coor[2], self.coor[3])),
                 round(0.02 * min(self.coor[2], self.coor[3]))))
         pygame.display.update()
