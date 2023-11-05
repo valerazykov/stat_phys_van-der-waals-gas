@@ -12,7 +12,7 @@ from sympy import *
 # температуры - 250 - 310 К
 
 def b_to_SI(b):
-    return b * 1e6
+    return b / 1e6
 
 
 R = 8.31
@@ -32,8 +32,6 @@ MAX_a = 1.5
 MIN_b = b_to_SI(1)
 MAX_b = b_to_SI(110)
 
-DEFAULT_MOLE = 1
-
 a_b_for_real_gases = {
     "He": (0.00346, 23.8),
     "Ar": (0.1355, 32),
@@ -45,45 +43,47 @@ a_b_for_real_gases = {
 }
 
 
-def energy_change(temp, vol, a, b, mole, freedoms=3):
+def energy_change(temp, vol, a, mole=1, freedoms=3):
     U_0 = mole * freedoms * R * temp[0] / 2 - mole * mole * a / vol[0]
     U_1 = mole * freedoms * R * temp[1] / 2 - mole * mole * a / vol[1]
     return U_1 - U_0
 
 
-def work_change(temp, vol, a, b, mole, freedoms=3):
+def work_change(temp, vol, a, b, mole=1):
     if temp[0] == temp[1]:
         answer = mole * R * temp[0] * math.log(
             (vol[1] - mole * b) / (vol[0] - mole * b))
         return answer - mole * mole * a * (1 / vol[0] - 1 / vol[1])
+    elif vol[0] == vol[1]:
+        return 0
 
     raise NotImplementedError
 
 
-def warmth_change(temp, vol, a, b, mole, freedoms=3):
+def warmth_change(temp, vol, a, b, mole=1, freedoms=3):
     if temp[0] == temp[1]:
         return mole * R * temp[0] * math.log(
             (vol[1] - mole * b) / (vol[0] - mole * b)
         )
-    answer = energy_change(temp, vol, a, b, mole, freedoms)
-    return answer + work_change(temp, vol, a, b, mole, freedoms)
+    answer = energy_change(temp, vol, a, mole, freedoms)
+    return answer + work_change(temp, vol, a, b, mole)
 
 
-def entropy_change(temp, vol, a, b, mole, freedoms=3):
+def entropy_change(temp, vol, b, freedoms=3):
     return (freedoms / 2 * R * math.log(temp[1] / temp[0]) +
             R * math.log((vol[1] - b) / (vol[0] - b)))
 
 
-def calc_press(temp, vol, a, b, mole):
+def calc_press(temp, vol, a, b, mole=1):
     return mole * R * temp / (vol - mole * b) - a * mole * mole / (vol ** 2)
 
 
-def calc_volume(temp, press, a, b, mole):
+def calc_volume(temp, press, a, b, mole=1):
     x = symbols('x', real=True)
     expr = (press * x ** 3 - (press * mole * b + mole * R * temp) * x ** 2 +
             mole ** 2 * a * x - mole ** 3 * a * b)
     return max(solve(expr, x))
 
 
-def calc_temperature(press, vol, a, b, mole):
+def calc_temperature(press, vol, a, b, mole=1):
     return (press + mole ** 2 * a / (vol ** 2)) * (vol - mole * b) / (mole * R)
