@@ -29,8 +29,8 @@ MAX_TEMP = 500
 MIN_a = 0
 MAX_a = 1.5
 
-MIN_b = b_to_SI(1)
-MAX_b = b_to_SI(110)
+MIN_b = 1  # в см^3 / моль
+MAX_b = 110  # в см^3 / моль
 
 # b в см^3 / моль
 a_b_for_real_gases = {
