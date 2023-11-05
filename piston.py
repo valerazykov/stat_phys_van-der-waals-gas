@@ -34,7 +34,6 @@ class Piston:
 
     def draw(self, temp, val, press, mode_press, mode_temp):
         """
-
         :param temp: текущая температура
         :param val: текущий объем
         :param press: текущее давление
