@@ -1,13 +1,12 @@
 import pygame
-import sys
-from button import Button
 from menu_screen import MenuScreen
 from authors_screen import AuthorsScreen
 from demo_screen import DemoScreen
 
 
 class App:
-    def __init__(self):
+    def __init__(self, fps=60):
+        self.fps = fps
         pygame.init()
         info_obj = pygame.display.Info()
         self.width = info_obj.current_w
@@ -20,6 +19,8 @@ class App:
         self.active_screen = self.menu_screen
 
     def run(self):
+        clock = pygame.time.Clock()
+
         """Запуск основного цикла"""
         while True:
             # Отслеживание событий клавиатуры и мыши.
@@ -27,6 +28,8 @@ class App:
             self.active_screen._update_screen()
             # Отображение последнего прорисованного экрана.
             pygame.display.flip()
+
+            clock.tick(self.fps)
 
 
 if __name__ == '__main__':

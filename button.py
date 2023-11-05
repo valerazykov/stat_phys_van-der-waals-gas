@@ -1,8 +1,7 @@
-import pygame.font
+import pygame
 
 
 class Button:
-
     def __init__(self, app, msg, position, button_size, font_size=36,
                  font='corbel'):
         """Инициализирует атрибуты кнопки."""
@@ -16,7 +15,7 @@ class Button:
         self.font = pygame.font.SysFont(self.font, font_size, bold=True)
         self.active = False
 
-        # Построение объекта rect кнопки и выравнивание по центру экрана.
+        # Построение объекта rect кнопки
         self.rect = pygame.Rect(*position, self.width, self.height)
 
         # Сообщение кнопки создается только один раз.
