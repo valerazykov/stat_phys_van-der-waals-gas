@@ -67,7 +67,7 @@ def warmth_change(temp, vol, a, b, mole=1, freedoms=3):
             (vol[1] - mole * b) / (vol[0] - mole * b)
         )
     answer = energy_change(temp, vol, a, mole, freedoms)
-    return answer + work_change(temp, vol, a, b, mole)
+    return answer + work(temp, vol, a, b, mole)
 
 
 def entropy_change(temp, vol, b, freedoms=3):
