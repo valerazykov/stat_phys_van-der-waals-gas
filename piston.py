@@ -40,9 +40,11 @@ class Piston:
         :param press: текущее давление
         :param mode_press: может принимать значения -1, 0, 1.
             Если -1, то изображение высыпания песка,
-            если 0, то статичная картинка, если 1, то изображение насыпания песка
+            если 0, то статичная картинка,
+            если 1, то изображение насыпания песка
         :param mode_temp: может принимать значения -1, 0, 1.
-            Если -1, то изображение охлаждения, если 0, то статичная картинка,
+            Если -1, то изображение охлаждения,
+            если 0, то статичная картинка,
             если 1, то изображение нагрева
         """
         if temp < self.limit_temp[0] or temp > self.limit_temp[1]:
@@ -122,9 +124,9 @@ class Piston:
         for t in range(11):
             if t % 2 == 1:
                 continue
-            text_surface = self.my_font.render(str(round(self.limit_temp[0] + \
-                                                         (self.limit_temp[1] - \
-                                                          self.limit_temp[0]) * \
+            text_surface = self.my_font.render(str(round(self.limit_temp[0] +
+                                                         (self.limit_temp[1] -
+                                                          self.limit_temp[0]) *
                                                          t / 10)) + ' K',
                                                True, 'Black')
             self.screen.blit(text_surface,
@@ -150,18 +152,13 @@ class Piston:
                           round(0.02 * min(self.coor[2], self.coor[3]))))
 
         gas = pygame.transform.scale(self.gas,
-                                     (width_piston - 2 * round(0.02 * \
-                                                               min(self.coor[
-                                                                       2],
-                                                                   self.coor[
-                                                                       3])),
+                                     (width_piston - 2 * round(0.02 *
+                                                               min(
+                                                                self.coor[2],
+                                                                self.coor[3])),
                                       round(
-                                          self.coor[3] * 0.5 - 2 * round(0.02 * \
-                                                                         min(
-                                                                             self.coor[
-                                                                                 2],
-                                                                             self.coor[
-                                                                                 3])) - offset)))
+                                          self.coor[3] * 0.5 - 2 * round(0.02 *
+                                   min(self.coor[2], self.coor[3])) - offset)))
         self.screen.blit(gas, (
         self.coor[0] + round(0.125 * self.coor[2]) + round(
             0.02 * min(self.coor[2], self.coor[3])),
@@ -234,8 +231,8 @@ class Piston:
                                                                        3])),
             self.coor[1] + round(0.3 * self.coor[3]) - round(0.1 * \
                                                              self.coor[3] * \
-                                                             press_part) + round(
-                offset)))
+                                                             press_part) +
+                                                                round(offset)))
 
             backet = pygame.transform.scale(self.backet,
                                             (round(0.0625 * self.coor[2]),
@@ -256,12 +253,10 @@ class Piston:
         if mode_press != -1:
             pygame.draw.rect(self.screen, (70, 70, 70), (
                 self.coor[0] + round(
-                    0.125 * self.coor[2]) + width_piston - 2 * round(0.02 * \
-                                                                     min(
-                                                                         self.coor[
-                                                                             2],
-                                                                         self.coor[
-                                                                             3])),
+                    0.125 * self.coor[2]) + width_piston - 2 * round(0.02 *
+                                                             min(
+                                                                self.coor[2],
+                                                                self.coor[3])),
                 self.coor[1] + round(0.3 * self.coor[3]) - round(
                     0.02 * min(self.coor[2], self.coor[3])),
                 round(0.02 * min(self.coor[2], self.coor[3])),
