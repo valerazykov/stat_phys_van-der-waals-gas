@@ -50,7 +50,7 @@ def energy_change(temp, vol, a, mole=1, freedoms=3):
     return U_1 - U_0
 
 
-def work_change(temp, vol, a, b, mole=1):
+def work(temp, vol, a, b, mole=1):
     if temp[0] == temp[1]:
         answer = mole * R * temp[0] * math.log(
             (vol[1] - mole * b) / (vol[0] - mole * b))
@@ -88,3 +88,15 @@ def calc_volume(temp, press, a, b, mole=1):
 
 def calc_temperature(press, vol, a, b, mole=1):
     return (press + mole ** 2 * a / (vol ** 2)) * (vol - mole * b) / (mole * R)
+
+
+def calc_crit_temp(a, b):
+    return 8 * a / (27 * b * R)
+
+
+def calc_crit_press(a, b):
+    return a / (27 * b ** 2)
+
+
+def calc_crit_volume(b):
+    return 3 * b
