@@ -22,7 +22,7 @@ class Piston:
         self.fire = pygame.image.load('images/fire.JPG')
         self.gas = pygame.image.load('images/gas.jpg')
         self.my_font = pygame.font.Font('images/Roboto-Black.ttf',
-                                        round(0.04 * coor[3]))
+                                        round(0.04 * min(coor[2], coor[3])))
         self.sand = pygame.image.load('images/sand.jpg')
         self.sand_d = pygame.image.load('images/sand_dinamic.jpg')
         self.sand_off = pygame.image.load('images/sand_off.jpg')
