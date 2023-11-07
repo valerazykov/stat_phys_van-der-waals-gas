@@ -68,7 +68,7 @@ class UserInput:
 
         self.real_gas_dropdown = Dropdown(
             win, x + self.real_gas_text.getWidth(), self.real_gas_text.getY(),
-                 width // 4, line_height,
+            width // 4, line_height,
             name="*не выбран*",
             choices=list(phys.a_b_for_real_gases.keys()),
             fontSize=little_font_size, inactiveColour=BUTTON_COLOR,
@@ -187,7 +187,7 @@ class UserInput:
         self.title4.setText("Скорость анимации:")
         self.speed_dropdown = Dropdown(
             win, x + self.title4.getWidth(), self.title4.getY(),
-                 width // 4, line_height,
+            width // 4, line_height,
             name="*не выбрана*",
             choices=self.speed_choices,
             values=self.speed_values,
@@ -200,7 +200,7 @@ class UserInput:
         self.temps = self.get_temps()
         self.T_dropdown = Dropdown(
             self.win, self.x + self.T_text.getWidth(), self.T_text.getY(),
-                      self.width // 4, self.line_height,
+            self.width // 4, self.line_height,
             name="*не выбрана*",
             choices=list(
                 map(lambda elem: str(round(elem, 1)) + " K", self.temps)
