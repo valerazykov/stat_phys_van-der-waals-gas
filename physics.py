@@ -11,10 +11,6 @@ from sympy import *
 # объёма - десятые, сотые, десятки кубических метров
 # температуры - 250 - 310 К
 
-def b_to_SI(b):
-    return b / 1e6
-
-
 R = 8.31
 
 MIN_PRESS = 100
@@ -37,12 +33,38 @@ a_b_for_real_gases = {
     "He": (0.00346, 23.8),
     "Ar": (0.1355, 32),
     "Ne": (0.0208, 16.7),
-    "N2": (0.137, 38.7),
-    "H2O": (0.5537, 30.5),
-    "O2": (0.1382, 31.9),
-    "HCN": (1.129, 88.1)
+    "Kr": (0.5193, 10.6),
+    "Xe": (0.4192, 51.6)
+    # не одноатомные газы:
+    # "N2": (0.137, 38.7),
+    # "H2O": (0.5537, 30.5),
+    # "O2": (0.1382, 31.9),
+    # "HCN": (1.129, 88.1)
 }
 
+
+def b_to_SI(b):
+    return b / 1e6
+
+
+def p_to_atm(p):
+    """from Pa to atm"""
+    return p / 1e5
+
+
+def p_to_pas(p):
+    """from atm to pas"""
+    return p * 1e5
+
+
+def vol_to_cm3(vol):
+    """from m^3 to cm^3"""
+    return vol * 1e6
+
+
+def vol_to_m3(vol):
+    """from cm^3 to m^3"""
+    return vol / 1e6
 
 def energy_change(temp, vol, a, mole=1, freedoms=3):
     U_0 = mole * freedoms * R * temp[0] / 2 - mole * mole * a / vol[0]
@@ -79,11 +101,15 @@ def calc_press(temp, vol, a, b, mole=1):
     return mole * R * temp / (vol - mole * b) - a * mole * mole / (vol ** 2)
 
 
-def calc_volume(temp, press, a, b, mole=1):
+def calc_volume_list(temp, press, a, b, mole=1):
     x = symbols('x', real=True)
     expr = (press * x ** 3 - (press * mole * b + mole * R * temp) * x ** 2 +
             mole ** 2 * a * x - mole ** 3 * a * b)
-    return max(solve(expr, x))
+    return solve(expr, x)
+
+
+def calc_volume(temp, press, a, b, mole=1):
+    return max(calc_volume_list(temp, press, a, b, mole))
 
 
 def calc_temperature(press, vol, a, b, mole=1):
