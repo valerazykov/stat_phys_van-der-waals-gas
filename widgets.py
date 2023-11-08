@@ -6,6 +6,7 @@ from pygame_widgets.button import Button
 from pygame_widgets.dropdown import Dropdown, DropdownChoice
 import numpy as np
 
+
 import physics as phys
 
 WHITE = (255, 255, 255)
@@ -135,6 +136,12 @@ class UserInput:
         self.T_text.disable()
         self.T_text.setText("T:")
         self.prev_T = None
+
+        self.MIN_p = None
+        self.MAX_p = None
+        self.MIN_vol = None
+        self.MAX_vol = None
+
         self._update_temp()
 
         self.title3 = TextBox(
@@ -218,22 +225,40 @@ class UserInput:
         self.confirmed_p = None
         self.confirmed_vol = None
 
+        (self.MIN_TEMP_LIST_p, self.MAX_TEMP_LIST_p,
+         self.MIN_VOL, self.MAX_VOL) = (
+            self._calc_borders_for_press_vol_temp_list()
+        )
+
     def _update_press_vol(self):
-        self.MIN_p, self.MAX_p = self._calc_borders_for_press()
-
-        if self.confirmed_p is None:
-            self.confirmed_p = (self.MIN_p + self.MAX_p) / 2
-            self.confirmed_vol = self._calc_vol_cm3(self.confirmed_p)
-        else:
-            # self.confirmed_vol = const
-            self.confirmed_p = self._calc_press_atm(self.confirmed_vol)
-
         if self.p_slider is not None:
             self.p_slider.hide()
 
         if self.vol_slider is not None:
             self.vol_slider.hide()
 
+        self.MIN_p, self.MAX_p = phys.calc_borders_for_press(
+            *self.get_confirmed_a_b_SI(),
+            self.get_confirmed_temp(),
+            phys.vol_to_m3(self.MIN_VOL),
+            phys.vol_to_m3(self.MAX_VOL)
+        )
+
+        """
+        self.vol_when_min_p_m3 = (
+            phys.calc_volume(
+            self.confirmed_T,
+            self.MIN_p,
+            *self.get_confirmed_a_b_SI(),
+            phys.vol_to_m3(self.MIN_VOL),
+            phys.vol_to_m3(self.MAX_VOL)
+        ))
+
+        print(f"{self.vol_when_min_p_m3 = }")
+        """
+
+        self.MIN_p = phys.p_to_atm(self.MIN_p)
+        self.MAX_p = phys.p_to_atm(self.MAX_p)
         p_slider_step = 1 if self.MIN_p > 10 else 0.01
         self.p_slider = Slider(
             self.win,
@@ -243,10 +268,8 @@ class UserInput:
             self.line_height // 4,
             min=self.MIN_p, max=self.MAX_p, step=p_slider_step
         )
-        self.prev_p = self.confirmed_p
-        self.p_slider.setValue(self.confirmed_p)
 
-        self.MIN_VOL, self.MAX_VOL = self._calc_borders_for_vol()
+        #self.MIN_VOL, self.MAX_VOL = self._calc_borders_for_vol()
         self.vol_slider = Slider(
             self.win,
             self.x + self.vol_output.getWidth() * 1.4,
@@ -255,7 +278,18 @@ class UserInput:
             self.line_height // 4,
             min=self.MIN_VOL, max=self.MAX_VOL, step=1
         )
+
+        if self.confirmed_p is None:
+            self.confirmed_p = (self.MIN_p + self.MAX_p) / 2
+            self.confirmed_vol = self._calc_vol_cm3(self.confirmed_p)
+        else:
+            # self.confirmed_vol = const
+            self.confirmed_p = self._calc_press_atm(self.confirmed_vol)
+
+        self.prev_p = self.confirmed_p
         self.prev_vol = self.confirmed_vol
+
+        self.p_slider.setValue(self.confirmed_p)
         self.vol_slider.setValue(self.confirmed_vol)
 
     def _set_temp_selected(self, i):
@@ -288,6 +322,7 @@ class UserInput:
         )
         self.speed_dropdown.chosen = default_speed_choice
 
+    """
     def _calc_borders_for_press(self, deviation=3):
         a, b = self.get_confirmed_a_b_SI()
         p_crit_atm = phys.p_to_atm(phys.calc_crit_press(a, b))
@@ -295,8 +330,8 @@ class UserInput:
 
     def _calc_borders_for_vol(self):
         a, b = self.get_confirmed_a_b_SI()
-        vol_crit_pas = phys.calc_crit_volume(b)
-        volumes = [vol_crit_pas]
+        vol_crit_m3 = phys.calc_crit_volume(b)
+        volumes = [vol_crit_m3]
         temp = self.confirmed_T
         for p in (self.MIN_p, self.MAX_p):
             p_pas = phys.p_to_pas(p)
@@ -306,12 +341,63 @@ class UserInput:
         max_vol_cm3 = phys.vol_to_cm3(max(volumes))
 
         return min_vol_cm3, max_vol_cm3
+    """
+
+    """
+    def _calc_borders_for_press_vol(self, deviation=1.1):
+        a, b = self.get_confirmed_a_b_SI()
+        p_crit_pas = phys.calc_crit_press(a, b)
+        print(p_crit_pas)
+        if p_crit_pas > phys.MAX_PRESS or p_crit_pas < phys.MIN_PRESS:
+            raise NotImplementedError
+        min_p_pas = max(p_crit_pas / deviation, phys.MIN_VOL)
+        max_p_pas = min(p_crit_pas * deviation, phys.MIN_VOL)
+
+        vol_crit_m3 = phys.calc_crit_volume(b)
+        print(vol_crit_m3)
+        volumes_m3 = [vol_crit_m3]
+        for temp in self.temps:
+            for p_pas in (min_p_pas, max_p_pas):
+                for new_vol in phys.calc_volume_list(temp, p_pas, a, b):
+                    if phys.MIN_VOL < new_vol < phys.MAX_VOL:
+                        volumes_m3.append(new_vol)
+
+        min_vol_cm3 = phys.vol_to_cm3(min(volumes_m3))
+        max_vol_cm3 = phys.vol_to_cm3(max(volumes_m3))
+
+        press_list_pas = [min_p_pas, max_p_pas]
+        for temp in self.temps:
+            for vol_m3 in volumes_m3:
+                p_pas = phys.calc_press(temp, vol_m3, a, b)
+                press_list_pas.append(p_pas)
+
+        min_p_atm = phys.p_to_atm(min(press_list_pas))
+        max_p_atm = phys.p_to_atm(max(press_list_pas))
+
+        return min_p_atm, max_p_atm, min_vol_cm3, max_vol_cm3
+    """
+
+    def _calc_borders_for_press_vol_temp_list(self):
+        a, b = self.get_confirmed_a_b_SI()
+        min_vol = phys.calc_min_vol(a, b, self.temps[0])
+        max_vol = phys.calc_max_vol(a, b, self.temps[-1])
+        min_p = phys.calc_min_press_for_temp_list(
+            a, b, self.temps[0], min_vol, max_vol
+        )
+        max_p = phys.calc_max_press_for_temp_list(
+            a, b, self.temps[-1], min_vol, max_vol
+        )
+
+        return (phys.p_to_atm(min_p), phys.p_to_atm(max_p),
+                phys.vol_to_cm3(min_vol), phys.vol_to_cm3(max_vol))
 
     def _calc_vol_cm3(self, p_atm):
         return phys.vol_to_cm3(phys.calc_volume(
             self.confirmed_T,
             phys.p_to_pas(p_atm),
-            *self.get_confirmed_a_b_SI()
+            *self.get_confirmed_a_b_SI(),
+            #phys.vol_to_m3(self.MIN_VOL),
+            #self.vol_when_min_p_m3
         ))
 
     def _calc_press_atm(self, vol_cm3):
@@ -339,13 +425,17 @@ class UserInput:
         self.on_click1()
 
     def _on_click2_decorated(self):
+        self.confirmed_T = self.T_dropdown.getSelected()
         self._update_press_vol()
         self.apply_button2.disable()
 
         self.on_click2()
 
     def _on_click3_decorated(self):
+        self.confirmed_p = self.p_slider.getValue()
+        self.confirmed_vol = self.vol_slider.getValue()
         self.apply_button3.disable()
+
         self.on_click3()
 
     def get_confirmed_a_b_SI(self):
@@ -360,21 +450,9 @@ class UserInput:
         """
         a, b = self.get_confirmed_a_b_SI()
         crit_temp = phys.calc_crit_temp(a, b)
-
-        if crit_temp <= phys.MIN_TEMP:
-            min_temp = self.MIN_TEMP
-        else:
-            min_temp = phys.MIN_TEMP
-
-        if crit_temp >= self.MAX_TEMP:
-            max_temp = 2 * crit_temp
-        else:
-            max_temp = self.MAX_TEMP
-
-        subcrit_step = (crit_temp - min_temp) / 4
-        temps = [min_temp + (i + 1) * subcrit_step for i in range(3)]
-        temps.append(crit_temp)
-        temps.append((max_temp + crit_temp) / 2)
+        min_temp = phys.calc_min_temp(a, b)
+        step = (crit_temp - min_temp) / 4
+        temps = [min_temp + (i + 1) * step for i in range(5)]
         return temps
 
     def get_confirmed_temp(self):
@@ -411,17 +489,6 @@ class UserInput:
             self.apply_button2.enable()
             self.apply_button2.inactiveColour = BUTTON_COLOR
 
-    def _press_vol_check(self, p, vol):
-        if self.prev_p is None:
-            return
-
-        if abs(p - self.prev_p) > self.EPS \
-                or abs(vol - self.prev_vol) > self.EPS:
-            self.prev_p = p
-            self.prev_vol = vol
-            self.apply_button3.enable()
-            self.apply_button3.inactiveColour = BUTTON_COLOR
-
     def update(self, events):
         pygame_widgets.update(events)
         a = self.a_slider.getValue()
@@ -435,10 +502,14 @@ class UserInput:
         if abs(p - self.prev_p) > self.EPS:
             vol = self._calc_vol_cm3(p)
             self.vol_slider.setValue(vol)
+            self.apply_button3.enable()
+            self.apply_button3.inactiveColour = BUTTON_COLOR
 
         if abs(vol - self.prev_vol) > self.EPS:
             p = self._calc_press_atm(vol)
             self.p_slider.setValue(p)
+            self.apply_button3.enable()
+            self.apply_button3.inactiveColour = BUTTON_COLOR
 
         self.prev_p = p
         self.prev_vol = vol
@@ -459,7 +530,6 @@ class UserInput:
 
         self._real_gas_check()
         self._temp_check()
-        self._press_vol_check(p, vol)
 
 
 if __name__ == "__main__":
