@@ -134,6 +134,7 @@ class UserInput:
         self.T_text.disable()
         self.T_text.setText("T:")
         self.prev_T = None
+        self.T_dropdown = None
 
         self.MIN_p = None
         self.MAX_p = None
@@ -201,8 +202,15 @@ class UserInput:
         )
         self._set_speed_selected(0)  # x1
 
+        self.prev_confirmed_T = None
+        self.prev_confirmed_p = None
+        self.prev_confirmed_vol = None
+
     def _update_temp(self):
-        self.temps = self.get_temps()
+        if self.T_dropdown is not None:
+            self.T_dropdown.hide()
+
+        self.temps = self._get_temps()
         self.T_dropdown = Dropdown(
             self.win, self.x + self.T_text.getWidth(), self.T_text.getY(),
             self.width // 4, self.line_height,
@@ -285,7 +293,7 @@ class UserInput:
         """
         temp = self.temps[i]
         default_temp_choice = DropdownChoice(
-            win, self.T_dropdown.getX(), self.T_dropdown.getY(),
+            self.win, self.T_dropdown.getX(), self.T_dropdown.getY(),
             self.T_dropdown.getWidth(), self.T_dropdown.getHeight(),
             text=str(round(temp, 1)) + " K", dropdown=self.T_dropdown,
             value=temp, last=(i == len(self.temps) - 1),
@@ -298,7 +306,7 @@ class UserInput:
         speed = self.speed_values[i]
         speed_str = self.speed_choices[i]
         default_speed_choice = DropdownChoice(
-            win, self.speed_dropdown.getX(), self.speed_dropdown.getY(),
+            self.win, self.speed_dropdown.getX(), self.speed_dropdown.getY(),
             self.speed_dropdown.getWidth(), self.speed_dropdown.getHeight(),
             text=speed_str, dropdown=self.speed_dropdown,
             value=speed, last=(i == len(self.speed_values) - 1),
@@ -356,6 +364,7 @@ class UserInput:
         self.on_click1()
 
     def _on_click2_decorated(self):
+        self.prev_confirmed_T = self.confirmed_T
         self.confirmed_T = self.T_dropdown.getSelected()
         self._update_press_vol()
         self.apply_button2.disable()
@@ -363,6 +372,8 @@ class UserInput:
         self.on_click2()
 
     def _on_click3_decorated(self):
+        self.prev_confirmed_p = self.confirmed_p
+        self.prev_confirmed_vol = self.confirmed_vol
         self.confirmed_p = self.p_slider.getValue()
         self.confirmed_vol = self.vol_slider.getValue()
         self.apply_button3.disable()
@@ -374,7 +385,7 @@ class UserInput:
         b = phys.b_to_SI(self.confirmed_b)
         return a, b
 
-    def get_temps(self) -> list[float]:
+    def _get_temps(self) -> list[float]:
         """
         Возвращает список из 5 температур:
             3 подкритических, критическую, 1 надкритическую.
@@ -388,6 +399,14 @@ class UserInput:
 
     def get_confirmed_temp(self):
         return self.confirmed_T
+
+    def get_confirmed_temp_ind(self):
+        conf_temp = self.get_confirmed_temp()
+        for ind, temp in enumerate(self.temps):
+            if abs(temp - conf_temp) < self.EPS:
+                return ind
+
+        raise ValueError
 
     def get_confirmed_press_atm(self):
         return self.confirmed_p

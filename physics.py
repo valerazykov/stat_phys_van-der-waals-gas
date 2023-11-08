@@ -13,6 +13,8 @@ from sympy.calculus.util import Interval, minimum, maximum
 # объёма - десятые, сотые, десятки кубических метров
 # температуры - 250 - 310 К
 
+EPS = 1e-12
+
 R = 8.31
 
 MIN_PRESS = 100
@@ -69,25 +71,29 @@ def vol_to_m3(vol):
     return vol / 1e6
 
 
+def energy(temp, vol, a, mole=1, freedoms=3):
+    return mole * freedoms * R * temp / 2 - mole * mole * a / vol
+
+
 def energy_change(temp, vol, a, mole=1, freedoms=3):
-    U_0 = mole * freedoms * R * temp[0] / 2 - mole * mole * a / vol[0]
-    U_1 = mole * freedoms * R * temp[1] / 2 - mole * mole * a / vol[1]
+    U_0 = energy(temp[0], vol[0], a, mole, freedoms)
+    U_1 = energy(temp[1], vol[1], a, mole, freedoms)
     return U_1 - U_0
 
 
 def work(temp, vol, a, b, mole=1):
-    if temp[0] == temp[1]:
+    if abs(temp[0] - temp[1]) < EPS:
         answer = mole * R * temp[0] * math.log(
             (vol[1] - mole * b) / (vol[0] - mole * b))
         return answer - mole * mole * a * (1 / vol[0] - 1 / vol[1])
-    elif vol[0] == vol[1]:
+    elif abs(vol[0] - vol[1]) < EPS:
         return 0
 
     raise NotImplementedError
 
 
 def warmth_change(temp, vol, a, b, mole=1, freedoms=3):
-    if temp[0] == temp[1]:
+    if abs(temp[0] - temp[1]) < EPS:
         return mole * R * temp[0] * math.log(
             (vol[1] - mole * b) / (vol[0] - mole * b)
         )

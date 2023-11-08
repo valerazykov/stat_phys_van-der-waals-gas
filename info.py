@@ -50,14 +50,14 @@ class Info:
             round(0.35 * self.coor[2]),
             2))
 
-    def draw(self, work, energy, warm, step, last_draw_for_199 = True):
+    def draw(self, work, energy, warm, step, last_draw_for_199=True):
         """
 
         :param work: работа на итерации
         :param energy: изменение внутренней энергии
         :param warm: полученное или отданное количество теплоты
         :param step: номер шага отрисовки (от 0 до 199 включительно)
-        :по умолчанию считается, что функция от step = 199 вызовется 1 раз, если нужно более 1 раза,
+        :param last_draw_for_199: по умолчанию считается, что функция от step = 199 вызовется 1 раз, если нужно более 1 раза,
         то last_draw_for_199 = False, но последний раз обязательно нужно вызвать last_draw_for_199 = True!!!
         Иначе значения не сохранятся
         """

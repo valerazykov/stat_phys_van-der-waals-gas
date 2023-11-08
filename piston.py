@@ -45,10 +45,10 @@ class Piston:
         self.k = 1
         self.count_step = round(0.025 * self.coor[2])
 
-    def draw(self, temp, val, press, mode_press, mode_temp):
+    def draw(self, temp, vol, press, mode_press, mode_temp):
         """
         :param temp: текущая температура
-        :param val: текущий объем
+        :param vol: текущий объем
         :param press: текущее давление
         :param mode_press: может принимать значения -1, 0, 1.
             Если -1, то изображение высыпания песка,
@@ -61,7 +61,7 @@ class Piston:
         """
         if temp < self.limit_temp[0] or temp > self.limit_temp[1]:
             raise ValueError("Temperature_invalid")
-        if val < self.limit_val[0] or val > self.limit_val[1]:
+        if vol < self.limit_val[0] or vol > self.limit_val[1]:
             raise ValueError("Value_invalid")
         if press < self.limit_press[0] or press > self.limit_press[1]:
             raise ValueError("Press_invalid")
@@ -147,7 +147,7 @@ class Piston:
                                                    self.coor[3])))
         # end_temp
         # begin_val
-        val_part = (val - self.limit_val[0]) / (
+        val_part = (vol - self.limit_val[0]) / (
                     self.limit_val[1] - self.limit_val[0])
         x = self.coor[0] + round(0.125 * self.coor[2]) + round(
             0.02 * min(self.coor[2],
