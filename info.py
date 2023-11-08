@@ -20,6 +20,14 @@ class Info:
         self.curr_data = init_energy
         self.ind = 0
 
+    def reinit(self, coor, screen, init_energy):
+        self.screen = screen
+        self.coor = coor
+        self.steps = 200
+        self.old_data = 0
+        self.curr_data = init_energy
+        self.ind = 0
+
     def lines(self):
         pygame.draw.rect(self.screen, (0, 0, 0), (
             self.coor[0] + round(0.55 * self.coor[2]) - round(0.45 * self.coor[2]),
@@ -42,13 +50,16 @@ class Info:
             round(0.35 * self.coor[2]),
             2))
 
-    def draw(self, work, energy, warm, step):
+    def draw(self, work, energy, warm, step, last_draw_for_199 = True):
         """
 
         :param work: работа на итерации
         :param energy: изменение внутренней энергии
         :param warm: полученное или отданное количество теплоты
         :param step: номер шага отрисовки (от 0 до 199 включительно)
+        :по умолчанию считается, что функция от step = 199 вызовется 1 раз, если нужно более 1 раза,
+        то last_draw_for_199 = False, но последний раз обязательно нужно вызвать last_draw_for_199 = True!!!
+        Иначе значения не сохранятся
         """
         self.ind += 1
         pygame.draw.rect(self.screen, (255, 255, 255), self.coor)
@@ -183,11 +194,14 @@ class Info:
                         self.coor[1] + round(0.3 * self.coor[3]) + round(0.6 * self.coor[3]) - self.old_c[3],
                         round(0.35 * self.coor[2]),
                         self.old_c[3]))
-                text_surface = self.my_font.render(str(self.curr_data) + ' + ' + str(energy) + ' ДЖ', True, 'Black')
+                if energy < 0:
+                    text_surface = self.my_font.render(str(self.curr_data) + str(energy) + ' ДЖ', True, 'Black')
+                else:
+                    text_surface = self.my_font.render(str(self.curr_data) + ' + ' + str(energy) + ' ДЖ', True, 'Black')
                 self.screen.blit(text_surface, (
                     self.coor[0] + round(0.65 * self.coor[2]),
                     self.coor[1] + round(0.5 * self.coor[3])))
-                if step == 199:
+                if step == 199 and last_draw_for_199 == True:
                     self.old_data = self.curr_data
                     self.curr_data += energy
         if self.ind > 200:
@@ -323,11 +337,14 @@ class Info:
                         self.coor[0] + round(0.55 * self.coor[2]),
                         self.coor[1] + round(0.3 * self.coor[3]) + round(0.6 * self.coor[3]) - self.old_c[3], round(0.35 * self.coor[2]),
                         self.old_c[3]))
-                text_surface = self.my_font.render(str(self.curr_data) + ' + '+ str(energy)+ ' ДЖ', True, 'Black')
+                if energy < 0:
+                    text_surface = self.my_font.render(str(self.curr_data) + str(energy) + ' ДЖ', True, 'Black')
+                else:
+                    text_surface = self.my_font.render(str(self.curr_data) + ' + ' + str(energy) + ' ДЖ', True, 'Black')
                 self.screen.blit(text_surface, (
                     self.coor[0] + round(0.65 * self.coor[2]),
                     self.coor[1] + round(0.5 * self.coor[3])))
-                if step == 199:
+                if step == 199 and last_draw_for_199 == True:
                     self.old_data = self.curr_data
                     self.curr_data += energy
         pygame.display.update()
@@ -345,31 +362,34 @@ if __name__ == "__main__":
     #        round(0.6 * self.coor[3])))
 
     running = True
-    scr.fill((114, 157, 224))
-    inf = Info((0, 0, 800, 600), scr, 80)
-    for s in range(200):
-        pygame.time.wait(50)
-        inf.draw(-7, 1000, -4 ,s)
-    for s in range(200):
-        pygame.time.wait(50)
-        inf.draw(-7, 100, 4 ,s)
-    for s in range(200):
-        pygame.time.wait(50)
-        inf.draw(-7, 0, -4 ,s)
-    for s in range(200):
-        pygame.time.wait(50)
-        inf.draw(7, -120, -4 ,s)
-    for s in range(200):
-        pygame.time.wait(50)
-        inf.draw(-7, 10, -4 ,s)
-    for s in range(200):
-        pygame.time.wait(50)
-        inf.draw(-7, -10, -4 ,s)
-    for s in range(200):
-        pygame.time.wait(50)
-        inf.draw(-7, 110, -4 ,s)
-    for s in range(200):
-        pygame.time.wait(50)
-        inf.draw(-7, 110, -4 ,s)
-    while 1:
-        u = 9
+scr.fill((114, 157, 224))
+inf = Info((0, 0, 1700, 1000), scr, 80)
+for s in range(200):
+    pygame.time.wait(50)
+    inf.draw(-7, 1000, -4 ,s, False)
+inf.draw(-7, 1000, -4 ,s, False)
+inf.draw(-7, 1000, -4 ,s, False)
+inf.draw(-7, 1000, -4 ,s, True)
+for s in range(200):
+    pygame.time.wait(50)
+    inf.draw(-7, 100, 4 ,s)
+for s in range(200):
+    pygame.time.wait(50)
+    inf.draw(-7, 0, -4 ,s)
+for s in range(200):
+    pygame.time.wait(50)
+    inf.draw(7, -120, -4 ,s)
+for s in range(200):
+    pygame.time.wait(50)
+    inf.draw(-7, 10, -4 ,s)
+for s in range(200):
+    pygame.time.wait(50)
+    inf.draw(-7, -10, -4 ,s)
+for s in range(200):
+    pygame.time.wait(50)
+    inf.draw(-7, 110, -4 ,s)
+for s in range(200):
+    pygame.time.wait(50)
+    inf.draw(-7, 110, -4 ,s)
+while 1:
+    u = 9
