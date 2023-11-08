@@ -362,34 +362,34 @@ if __name__ == "__main__":
     #        round(0.6 * self.coor[3])))
 
     running = True
-scr.fill((114, 157, 224))
-inf = Info((0, 0, 1700, 1000), scr, 80)
-for s in range(200):
-    pygame.time.wait(50)
+    scr.fill((114, 157, 224))
+    inf = Info((0, 0, 800, 600), scr, 80)
+    for s in range(200):
+        pygame.time.wait(50)
+        inf.draw(-7, 1000, -4 ,s, False)
     inf.draw(-7, 1000, -4 ,s, False)
-inf.draw(-7, 1000, -4 ,s, False)
-inf.draw(-7, 1000, -4 ,s, False)
-inf.draw(-7, 1000, -4 ,s, True)
-for s in range(200):
-    pygame.time.wait(50)
-    inf.draw(-7, 100, 4 ,s)
-for s in range(200):
-    pygame.time.wait(50)
-    inf.draw(-7, 0, -4 ,s)
-for s in range(200):
-    pygame.time.wait(50)
-    inf.draw(7, -120, -4 ,s)
-for s in range(200):
-    pygame.time.wait(50)
-    inf.draw(-7, 10, -4 ,s)
-for s in range(200):
-    pygame.time.wait(50)
-    inf.draw(-7, -10, -4 ,s)
-for s in range(200):
-    pygame.time.wait(50)
-    inf.draw(-7, 110, -4 ,s)
-for s in range(200):
-    pygame.time.wait(50)
-    inf.draw(-7, 110, -4 ,s)
-while 1:
-    u = 9
+    inf.draw(-7, 1000, -4 ,s, False)
+    inf.draw(-7, 1000, -4 ,s, True)
+    for s in range(200):
+        pygame.time.wait(50)
+        inf.draw(-7, 100, 4 ,s)
+    for s in range(200):
+        pygame.time.wait(50)
+        inf.draw(-7, 0, -4 ,s)
+    for s in range(200):
+        pygame.time.wait(50)
+        inf.draw(7, -120, -4 ,s)
+    for s in range(200):
+        pygame.time.wait(50)
+        inf.draw(-7, 10, -4 ,s)
+    for s in range(200):
+        pygame.time.wait(50)
+        inf.draw(-7, -10, -4 ,s)
+    for s in range(200):
+        pygame.time.wait(50)
+        inf.draw(-7, 110, -4 ,s)
+    for s in range(200):
+        pygame.time.wait(50)
+        inf.draw(-7, 110, -4 ,s)
+    while 1:
+        u = 9
