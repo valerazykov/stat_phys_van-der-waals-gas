@@ -32,6 +32,19 @@ class Piston:
         self.k = 1
         self.count_step = round(0.025 * self.coor[2])
 
+    def reinit(self, coor, limit_temp, limit_val, limit_press, screen):
+        self.screen = screen
+        self.coor = coor
+        self.limit_temp = limit_temp
+        self.limit_val = limit_val
+        self.limit_press = limit_press
+        self.my_font = pygame.font.Font('images/Roboto-Black.ttf',
+                                        round(0.04 * min(coor[2], coor[3])))
+        self.temp_sn = 0
+        self.temp_f = 0
+        self.k = 1
+        self.count_step = round(0.025 * self.coor[2])
+
     def draw(self, temp, val, press, mode_press, mode_temp):
         """
         :param temp: текущая температура
