@@ -194,7 +194,10 @@ class Info:
                         self.coor[1] + round(0.3 * self.coor[3]) + round(0.6 * self.coor[3]) - self.old_c[3],
                         round(0.35 * self.coor[2]),
                         self.old_c[3]))
-                text_surface = self.my_font.render(str(self.curr_data) + ' + ' + str(energy) + ' ДЖ', True, 'Black')
+                if energy < 0:
+                    text_surface = self.my_font.render(str(self.curr_data) + str(energy) + ' ДЖ', True, 'Black')
+                else:
+                    text_surface = self.my_font.render(str(self.curr_data) + ' + ' + str(energy) + ' ДЖ', True, 'Black')
                 self.screen.blit(text_surface, (
                     self.coor[0] + round(0.65 * self.coor[2]),
                     self.coor[1] + round(0.5 * self.coor[3])))
