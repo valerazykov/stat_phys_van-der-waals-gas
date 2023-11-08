@@ -1,8 +1,8 @@
 import math
 import numpy as np
+from numpy.polynomial.polynomial import Polynomial
 from sympy import symbols, solve
 from sympy.calculus.util import Interval, minimum, maximum
-from scipy.optimize import root_scalar, minimize_scalar
 
 # Все параметры измеряются в единицах измерения Си.
 # a - характеризует силу притяжения молекул, измеряется в Дж * м^3 / моль
@@ -104,24 +104,22 @@ def calc_press(temp, vol, a, b, mole=1):
     return mole * R * temp / (vol - mole * b) - a * mole * mole / (vol ** 2)
 
 
-def calc_volume_list(temp, press, a, b, mole=1):
-    vol = symbols('vol', real=True)
-    expr = (press * vol ** 3 - (press * mole * b + mole * R * temp) * vol ** 2
-            + mole ** 2 * a * vol - mole ** 3 * a * b)
-    return solve(expr, vol)
+def calc_volume_arr(temp, press, a, b, min_vol, max_vol, mole=1) -> np.ndarray:
+    coefs = np.array([- mole ** 3 * a * b, mole ** 2 * a,
+                      - (press * mole * b + mole * R * temp), press],
+                     dtype="float64")
+    pol = Polynomial(coefs)
+    roots = pol.roots()
+    real_roots = np.real(roots[np.isreal(roots)])
+    real_roots_in_domain = real_roots[
+        (min_vol <= real_roots) & (real_roots <= max_vol)
+        ]
+    return real_roots_in_domain
 
 
-def calc_volume(temp, press, a, b, mole=1):
-    """
-    f = lambda vol: (press * vol ** 3 - (press * mole * b + mole * R * temp)
-                     * vol ** 2) + mole ** 2 * a * vol - mole ** 3 * a * b
-    ro = root_scalar(f, x0=min_vol, x1=max_vol, bracket=np.array([min_vol, max_vol], dtype=float), method='secant')
-    print("--->", ro.root, temp, press, a, b, min_vol, max_vol)
-    #return ro.root
-    """
-    vol_list = calc_volume_list(temp, press, a, b, mole)
-    print("calc_volume--->", vol_list, temp, press, a, b)
-    return max(vol_list)
+def calc_volume(temp, press, a, b, min_vol, max_vol, mole=1):
+    vol_list = calc_volume_arr(temp, press, a, b, min_vol, max_vol, mole)
+    return np.max(vol_list)
 
 
 def calc_temperature(press, vol, a, b, mole=1):
@@ -197,22 +195,14 @@ def calc_max_press_for_temp_list(a, b, temp_right, min_vol, max_vol):
     return maximum(p, vol, ivl)
 
 
-def calc_vol_when_min_p(a, b, curr_temp, min_vol, max_vol):
-    press = lambda vol: R * curr_temp / (vol - b) - a / (vol ** 2)
-    print("calc_vol_when_min_p:", minimize_scalar(press, bounds=[min_vol, max_vol], method="bounded"))
-
-
 def calc_borders_for_press(a, b, curr_temp, min_vol, max_vol):
     """
     Посчитать границы для p, при текущей температуре
     в зависимости от границ объема.
     (Для 1 моля вещества).
     """
-    #calc_vol_when_min_p(a, b, curr_temp, min_vol, max_vol)
     vol = symbols("vol", real=True)
     p = R * curr_temp / (vol - b) - a / (vol ** 2)
     ivl = Interval(min_vol, max_vol)
     borders = (minimum(p, vol, ivl), maximum(p, vol, ivl))
-    print(a, b, curr_temp, min_vol, max_vol)
-    print("borders for p (curr temp): ", *borders)
     return borders

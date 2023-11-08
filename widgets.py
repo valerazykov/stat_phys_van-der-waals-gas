@@ -4,8 +4,6 @@ from pygame_widgets.slider import Slider
 from pygame_widgets.textbox import TextBox
 from pygame_widgets.button import Button
 from pygame_widgets.dropdown import Dropdown, DropdownChoice
-import numpy as np
-
 
 import physics as phys
 
@@ -139,8 +137,8 @@ class UserInput:
 
         self.MIN_p = None
         self.MAX_p = None
-        self.MIN_vol = None
-        self.MAX_vol = None
+        self.MIN_VOL = None
+        self.MAX_VOL = None
 
         self._update_temp()
 
@@ -226,7 +224,8 @@ class UserInput:
         self.confirmed_vol = None
 
         (self.MIN_TEMP_LIST_p, self.MAX_TEMP_LIST_p,
-         self.MIN_VOL, self.MAX_VOL) = (
+         self.MIN_VOL, self.MAX_VOL,
+         self.MIN_VOL_M3, self.MAX_VOL_M3) = (
             self._calc_borders_for_press_vol_temp_list()
         )
 
@@ -240,25 +239,12 @@ class UserInput:
         self.MIN_p, self.MAX_p = phys.calc_borders_for_press(
             *self.get_confirmed_a_b_SI(),
             self.get_confirmed_temp(),
-            phys.vol_to_m3(self.MIN_VOL),
-            phys.vol_to_m3(self.MAX_VOL)
+            self.MIN_VOL_M3,
+            self.MAX_VOL_M3
         )
 
-        """
-        self.vol_when_min_p_m3 = (
-            phys.calc_volume(
-            self.confirmed_T,
-            self.MIN_p,
-            *self.get_confirmed_a_b_SI(),
-            phys.vol_to_m3(self.MIN_VOL),
-            phys.vol_to_m3(self.MAX_VOL)
-        ))
-
-        print(f"{self.vol_when_min_p_m3 = }")
-        """
-
-        self.MIN_p = phys.p_to_atm(self.MIN_p)
-        self.MAX_p = phys.p_to_atm(self.MAX_p)
+        self.MIN_p = phys.p_to_atm(self.MIN_p) + self.EPS
+        self.MAX_p = phys.p_to_atm(self.MAX_p) - self.EPS
         p_slider_step = 1 if self.MIN_p > 10 else 0.01
         self.p_slider = Slider(
             self.win,
@@ -269,7 +255,6 @@ class UserInput:
             min=self.MIN_p, max=self.MAX_p, step=p_slider_step
         )
 
-        #self.MIN_VOL, self.MAX_VOL = self._calc_borders_for_vol()
         self.vol_slider = Slider(
             self.win,
             self.x + self.vol_output.getWidth() * 1.4,
@@ -322,61 +307,6 @@ class UserInput:
         )
         self.speed_dropdown.chosen = default_speed_choice
 
-    """
-    def _calc_borders_for_press(self, deviation=3):
-        a, b = self.get_confirmed_a_b_SI()
-        p_crit_atm = phys.p_to_atm(phys.calc_crit_press(a, b))
-        return p_crit_atm / deviation, p_crit_atm * deviation
-
-    def _calc_borders_for_vol(self):
-        a, b = self.get_confirmed_a_b_SI()
-        vol_crit_m3 = phys.calc_crit_volume(b)
-        volumes = [vol_crit_m3]
-        temp = self.confirmed_T
-        for p in (self.MIN_p, self.MAX_p):
-            p_pas = phys.p_to_pas(p)
-            volumes += phys.calc_volume_list(temp, p_pas, a, b)
-
-        min_vol_cm3 = phys.vol_to_cm3(min(volumes))
-        max_vol_cm3 = phys.vol_to_cm3(max(volumes))
-
-        return min_vol_cm3, max_vol_cm3
-    """
-
-    """
-    def _calc_borders_for_press_vol(self, deviation=1.1):
-        a, b = self.get_confirmed_a_b_SI()
-        p_crit_pas = phys.calc_crit_press(a, b)
-        print(p_crit_pas)
-        if p_crit_pas > phys.MAX_PRESS or p_crit_pas < phys.MIN_PRESS:
-            raise NotImplementedError
-        min_p_pas = max(p_crit_pas / deviation, phys.MIN_VOL)
-        max_p_pas = min(p_crit_pas * deviation, phys.MIN_VOL)
-
-        vol_crit_m3 = phys.calc_crit_volume(b)
-        print(vol_crit_m3)
-        volumes_m3 = [vol_crit_m3]
-        for temp in self.temps:
-            for p_pas in (min_p_pas, max_p_pas):
-                for new_vol in phys.calc_volume_list(temp, p_pas, a, b):
-                    if phys.MIN_VOL < new_vol < phys.MAX_VOL:
-                        volumes_m3.append(new_vol)
-
-        min_vol_cm3 = phys.vol_to_cm3(min(volumes_m3))
-        max_vol_cm3 = phys.vol_to_cm3(max(volumes_m3))
-
-        press_list_pas = [min_p_pas, max_p_pas]
-        for temp in self.temps:
-            for vol_m3 in volumes_m3:
-                p_pas = phys.calc_press(temp, vol_m3, a, b)
-                press_list_pas.append(p_pas)
-
-        min_p_atm = phys.p_to_atm(min(press_list_pas))
-        max_p_atm = phys.p_to_atm(max(press_list_pas))
-
-        return min_p_atm, max_p_atm, min_vol_cm3, max_vol_cm3
-    """
-
     def _calc_borders_for_press_vol_temp_list(self):
         a, b = self.get_confirmed_a_b_SI()
         min_vol = phys.calc_min_vol(a, b, self.temps[0])
@@ -389,15 +319,16 @@ class UserInput:
         )
 
         return (phys.p_to_atm(min_p), phys.p_to_atm(max_p),
-                phys.vol_to_cm3(min_vol), phys.vol_to_cm3(max_vol))
+                phys.vol_to_cm3(min_vol), phys.vol_to_cm3(max_vol),
+                min_vol, max_vol)
 
     def _calc_vol_cm3(self, p_atm):
         return phys.vol_to_cm3(phys.calc_volume(
             self.confirmed_T,
             phys.p_to_pas(p_atm),
             *self.get_confirmed_a_b_SI(),
-            #phys.vol_to_m3(self.MIN_VOL),
-            #self.vol_when_min_p_m3
+            self.MIN_VOL_M3,
+            self.MAX_VOL_M3
         ))
 
     def _calc_press_atm(self, vol_cm3):
