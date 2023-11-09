@@ -60,10 +60,12 @@ class Piston:
             если 1, то изображение нагрева
         """
         if temp < self.limit_temp[0] or temp > self.limit_temp[1]:
+            print(self.limit_temp[0], temp, self.limit_temp[1])
             raise ValueError("Temperature_invalid")
         if vol < self.limit_val[0] or vol > self.limit_val[1]:
             raise ValueError("Value_invalid")
         if press < self.limit_press[0] or press > self.limit_press[1]:
+            print(self.limit_press[0], press, self.limit_press[1])
             raise ValueError("Press_invalid")
         if mode_press not in {-1, 0, 1} or mode_temp not in {-1, 0, 1}:
             raise ValueError("Mode_invalid")

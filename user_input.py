@@ -206,6 +206,10 @@ class UserInput:
         self.prev_confirmed_p = None
         self.prev_confirmed_vol = None
 
+        self.apply_button1_was_disabled = True
+        self.apply_button2_was_disabled = True
+        self.apply_button3_was_disabled = True
+
     def _update_temp(self):
         if self.T_dropdown is not None:
             self.T_dropdown.hide()
@@ -481,6 +485,39 @@ class UserInput:
         self._real_gas_check()
         self._temp_check()
 
+    def disable(self):
+        self.real_gas_dropdown.disable()
+        self.a_slider.disable()
+        self.b_slider.disable()
+        self.T_dropdown.disable()
+        self.p_slider.disable()
+        self.vol_slider.disable()
+
+        self.apply_button1_was_disabled = self.apply_button1._disabled
+        self.apply_button2_was_disabled = self.apply_button2._disabled
+        self.apply_button3_was_disabled = self.apply_button3._disabled
+
+        self.apply_button1.disable()
+        self.apply_button2.disable()
+        self.apply_button3.disable()
+
+    def enable(self):
+        self.real_gas_dropdown.enable()
+        self.a_slider.enable()
+        self.b_slider.enable()
+        self.T_dropdown.enable()
+        self.p_slider.enable()
+        self.vol_slider.enable()
+
+        if not self.apply_button1_was_disabled:
+            self.apply_button1.enable()
+
+        if not self.apply_button2_was_disabled:
+            self.apply_button2.enable()
+
+        if not self.apply_button3_was_disabled:
+            self.apply_button3.enable()
+
 
 if __name__ == "__main__":
     pygame.init()
@@ -492,6 +529,7 @@ if __name__ == "__main__":
     clock = pygame.time.Clock()
 
     user_input = UserInput(win, 0, 0, width, height)
+
 
     run = True
     while run:
