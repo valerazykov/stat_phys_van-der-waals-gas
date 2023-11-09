@@ -1,7 +1,7 @@
 import pygame
 
 class Info:
-    def __init__(self, coor, screen, init_energy):
+    def __init__(self, coor, screen, init_energy, offset):
         """
 
         :param coor: кортеж из 4 значений: х координата левого верхнего угла,
@@ -12,35 +12,37 @@ class Info:
         self.screen = screen
         self.coor = coor
         self.my_font = pygame.font.Font('images/Roboto-Black.ttf',
-                                        round(0.04 * min(coor[2], coor[3])))
+                                        round(0.05 * min(coor[2], coor[3])))
         self.my_font2 = pygame.font.Font('images/Roboto-Black.ttf',
                                         round(0.08 * min(coor[2], coor[3])))
         self.steps = 200
-        self.old_data = 0
-        self.curr_data = init_energy
+        self.old_data = 0 + offset
+        self.curr_data = init_energy + offset
         self.ind = 0
         self.old_c = (
             self.coor[0] + round(0.55 * self.coor[2]) - round(
                 0.45 * self.coor[2]),
             self.coor[1] + round(0.9 * self.coor[3]),
             round(0.35 * self.coor[2]),
-            2)
+            1)
         self.size = 1
+        self.offset = offset
 
-    def reinit(self, coor, screen, init_energy):
+    def reinit(self, coor, screen, init_energy, offset):
         self.screen = screen
         self.coor = coor
         self.steps = 200
-        self.old_data = 0
-        self.curr_data = init_energy
+        self.old_data = 0 + offset
+        self.curr_data = init_energy + offset
         self.ind = 0
         self.old_c = (
             self.coor[0] + round(0.55 * self.coor[2]) - round(
                 0.45 * self.coor[2]),
             self.coor[1] + round(0.9 * self.coor[3]),
             round(0.35 * self.coor[2]),
-            2)
+            1)
         self.size = 1
+        self.offset = offset
 
     def lines(self):
         pygame.draw.rect(self.screen, (0, 0, 0), (
@@ -100,17 +102,17 @@ class Info:
         pygame.draw.rect(self.screen, (0, 0, 0),
                          (self.coor[0] + round(self.coor[2] / 2), self.coor[1], 2, round(self.coor[3] / 5)))
         text_surface = self.my_font.render('Совершённая работа',True, 'Black')
-        self.screen.blit(text_surface, (self.coor[0] + round(1 / 11 * self.coor[2]), self.coor[1] + round(1 / 32 * self.coor[3])))
-        text_surface = self.my_font.render('Получ./отд. кол-во теплоты', True, 'Black')
-        self.screen.blit(text_surface, (self.coor[0] + round(0.54 * self.coor[2]), self.coor[1] + round(1 / 32 * self.coor[3])))
+        self.screen.blit(text_surface, (self.coor[0] + round(1 / 12 * self.coor[2]), self.coor[1] + round(1 / 32 * self.coor[3])))
+        text_surface = self.my_font.render('Получ./отд. кол-во тепл.', True, 'Black')
+        self.screen.blit(text_surface, (self.coor[0] + round(0.51 * self.coor[2]), self.coor[1] + round(1 / 32 * self.coor[3])))
         text_surface = self.my_font2.render(str(work) + ' ДЖ', True, 'Black')
         self.screen.blit(text_surface, (self.coor[0] + round(1 / 7 * self.coor[2]), self.coor[1] + round(1 / 11 * self.coor[3])))
         text_surface = self.my_font2.render(str(warm) + ' ДЖ', True, 'Black')
         self.screen.blit(text_surface,
                          (self.coor[0] + round((0.5 + 1 / 7) * self.coor[2]), self.coor[1] + round(1 / 11 * self.coor[3])))
-        text_surface = self.my_font.render('Внутр. энергия на пред. шаге', True, 'Black')
+        text_surface = self.my_font.render('Внутр. эн. на пред. шаге', True, 'Black')
         self.screen.blit(text_surface, (
-            self.coor[0] + round(0.05 * self.coor[2]), self.coor[1] + round(0.93 * self.coor[3])))
+            self.coor[0] + round(0.02 * self.coor[2]), self.coor[1] + round(0.93 * self.coor[3])))
         text_surface = self.my_font.render('Текущ. внутр. энергия', True, 'Black')
         self.screen.blit(text_surface, (
             self.coor[0] + round(0.55 * self.coor[2]), self.coor[1] + round(0.93 * self.coor[3])))
@@ -118,43 +120,9 @@ class Info:
         if flag <= 200:
             step = step // 4
             step += 150
-            if step < 100:
-                self.lines()
-                pygame.draw.rect(self.screen, (255, 128, 0), (
-                    self.coor[0] + round(0.55 * self.coor[2]) - round(0.45 * self.coor[2] / 100 * step), self.coor[1] + round(0.3 * self.coor[3]),
-                    round(0.35 * self.coor[2]),
-                    round(0.6 * self.coor[3])))
-                text_surface = self.my_font.render(str(self.curr_data) + ' ДЖ', True, 'Black')
-                self.screen.blit(text_surface, (
-                    self.coor[0] + round(0.65 * self.coor[2]) - round(0.45 * self.coor[2] / 100 * step), self.coor[1] + round(0.5 * self.coor[3])))
 
-            if step >= 100 and step < 150:
-                if energy <= 0:
-                    self.lines()
-                    pygame.draw.rect(self.screen, (255, 128, 0), (
-                        self.coor[0] + round(0.55 * self.coor[2]) - round(0.45 * self.coor[2]),
-                        self.coor[1] + round(0.3 * self.coor[3]),
-                        round(0.35 * self.coor[2]),
-                        round(0.6 * self.coor[3])))
-                    text_surface = self.my_font.render(str(self.curr_data) + ' ДЖ', True, 'Black')
-                    self.screen.blit(text_surface, (
-                        self.coor[0] + round(0.2 * self.coor[2]),
-                        self.coor[1] + round(0.5 * self.coor[3])))
-                    pygame.display.update()
-                    return
-                self.lines()
-                new_h = round(self.curr_data * 0.6 * self.coor[3] / (self.curr_data + energy))
-                new_h = round(0.6 * self.coor[3]) - new_h
-                one_step = round(new_h / 50)
-                pygame.draw.rect(self.screen, (255, 128, 0), (
-                    self.coor[0] + round(0.55 * self.coor[2]) - round(0.45 * self.coor[2]),
-                    self.coor[1] + round(0.3 * self.coor[3]) + one_step * (step - 100),
-                    round(0.35 * self.coor[2]),
-                    round(0.6 * self.coor[3]) - one_step * (step - 100)))
-                text_surface = self.my_font.render(str(self.curr_data) + ' ДЖ', True, 'Black')
-                self.screen.blit(text_surface, (
-                    self.coor[0] + round(0.2 * self.coor[2]),
-                    self.coor[1] + round(0.5 * self.coor[3])))
+
+
             if step >= 150:
                 self.lines()
                 s = 174 - step
@@ -162,7 +130,7 @@ class Info:
                 self.size = round(0.6 * self.coor[3])
                 if energy <= 0:
                     self.size = (1 + energy / self.curr_data) * 0.6 * self.coor[3]
-                    text_surface = self.my_font.render(str(self.curr_data) + ' ДЖ', True, 'Black')
+                    text_surface = self.my_font.render(str(self.curr_data - self.offset) + ' ДЖ', True, 'Black')
                     self.screen.blit(text_surface, (
                         self.coor[0] + round(0.2 * self.coor[2]),
                         self.coor[1] + round(0.5 * self.coor[3])))
@@ -171,7 +139,7 @@ class Info:
                             0.45 * self.coor[2]),
                         self.coor[1] + round(0.9 * self.coor[3]),
                         round(0.35 * self.coor[2]),
-                        2)
+                        1)
                 else:
 
                     pygame.draw.rect(self.screen, (255, 128, 0), (
@@ -180,7 +148,7 @@ class Info:
                             self.curr_data * 0.6 * self.coor[3] / (self.curr_data + energy)),
                         round(0.35 * self.coor[2]),
                         round(self.curr_data * 0.6 * self.coor[3] / (self.curr_data + energy))))
-                    text_surface = self.my_font.render(str(self.curr_data) + ' ДЖ', True, 'Black')
+                    text_surface = self.my_font.render(str(self.curr_data - self.offset) + ' ДЖ', True, 'Black')
                     self.screen.blit(text_surface, (
                         self.coor[0] + round(0.2 * self.coor[2]),
                         self.coor[1] + round(0.5 * self.coor[3])))
@@ -189,7 +157,7 @@ class Info:
                             0.45 * self.coor[2]),
                         self.coor[1] + round(0.9 * self.coor[3]),
                         round(0.35 * self.coor[2]),
-                        2)
+                        1)
                 color = (0, 204, 0)
                 if energy < 0:
                     color = (255, 128, 0)
@@ -217,12 +185,12 @@ class Info:
                         round(0.35 * self.coor[2]),
                         round(0.6 * self.coor[3]) - round(self.size)))
                 if energy < 0:
-                    text_surface = self.my_font.render(str(self.curr_data) + str(energy) + ' ДЖ', True, 'Black')
+                    text_surface = self.my_font.render(str(self.curr_data - self.offset) + str(energy) + ' ДЖ', True, 'Black')
                 elif energy > 0:
-                    text_surface = self.my_font.render(str(self.curr_data) + ' + ' + str(energy) + ' ДЖ', True, 'Black')
+                    text_surface = self.my_font.render(str(self.curr_data - self.offset) + ' + ' + str(energy) + ' ДЖ', True, 'Black')
                 else:
                     text_surface = self.my_font.render(
-                        str(self.curr_data) + ' ДЖ', True,
+                        str(self.curr_data - self.offset) + ' ДЖ', True,
                         'Black')
                 self.screen.blit(text_surface, (
                     self.coor[0] + round(0.65 * self.coor[2]),
@@ -237,7 +205,7 @@ class Info:
                     self.old_c[0], self.coor[1] + round(0.9 * self.coor[3]) - round(self.old_c[3]) + round(self.old_c[3] / 50 * step),
                     self.old_c[2],
                     round(self.old_c[3] / 50 * (50 - step))))
-                text_surface = self.my_font.render(str(self.curr_data)  + ' ДЖ', True, 'Black')
+                text_surface = self.my_font.render(str(self.curr_data - self.offset)  + ' ДЖ', True, 'Black')
                 self.screen.blit(text_surface, (
                     self.coor[0] + round(0.65 * self.coor[2]),
                     self.coor[1] + round(0.5 * self.coor[3])))
@@ -258,7 +226,7 @@ class Info:
                         self.coor[1] + round(0.3 * self.coor[3]),
                         round(0.35 * self.coor[2]),
                         round(0.6 * self.coor[3]) - self.old_c[3]))
-                text_surface = self.my_font.render(str(self.curr_data) + ' ДЖ', True, 'Black')
+                text_surface = self.my_font.render(str(self.curr_data - self.offset) + ' ДЖ', True, 'Black')
                 self.screen.blit(text_surface, (
                     self.coor[0] + round(0.65 * self.coor[2]),
                     self.coor[1] + round(0.5 * self.coor[3])))
@@ -268,7 +236,7 @@ class Info:
                     self.coor[0] + round(0.55 * self.coor[2]) - round(0.45 * self.coor[2] / 50 * (step - 50)), self.coor[1] + round(0.9 * self.coor[3]) - round(self.size),
                     round(0.35 * self.coor[2]),
                     round(self.size)))
-                text_surface = self.my_font.render(str(self.curr_data) + ' ДЖ', True, 'Black')
+                text_surface = self.my_font.render(str(self.curr_data - self.offset) + ' ДЖ', True, 'Black')
                 self.screen.blit(text_surface, (
                     self.coor[0] + round(0.65 * self.coor[2]) - round(0.45 * self.coor[2] / 50 * (step - 50)),
                     self.coor[1] + round(0.5 * self.coor[3])))
@@ -279,7 +247,7 @@ class Info:
                     self.coor[1] + round(0.9 * self.coor[3]) - round(self.size) - (round(self.size) + round((0.6 * self.coor[3] - self.size) / 25 * (step - 100)) - round(self.size)),
                     round(0.35 * self.coor[2]),
                     round(self.size) + round((0.6 * self.coor[3] - self.size) / 25 * (step - 100))))
-                text_surface = self.my_font.render(str(self.curr_data) + ' ДЖ', True, 'Black')
+                text_surface = self.my_font.render(str(self.curr_data - self.offset) + ' ДЖ', True, 'Black')
                 self.screen.blit(text_surface, (
                     self.coor[0] + round(0.2 * self.coor[2]),
                     self.coor[1] + round(0.5 * self.coor[3])))
@@ -291,7 +259,7 @@ class Info:
                         self.coor[1] + round(0.3 * self.coor[3]),
                         round(0.35 * self.coor[2]),
                         round(0.6 * self.coor[3])))
-                    text_surface = self.my_font.render(str(self.curr_data) + ' ДЖ', True, 'Black')
+                    text_surface = self.my_font.render(str(self.curr_data - self.offset) + ' ДЖ', True, 'Black')
                     self.screen.blit(text_surface, (
                         self.coor[0] + round(0.2 * self.coor[2]),
                         self.coor[1] + round(0.5 * self.coor[3])))
@@ -305,7 +273,7 @@ class Info:
                     self.coor[1] + round(0.3 * self.coor[3]) + one_step * (step - 100),
                     round(0.35 * self.coor[2]),
                     round(0.6 * self.coor[3]) - one_step * (step - 100)))
-                text_surface = self.my_font.render(str(self.curr_data) + ' ДЖ', True, 'Black')
+                text_surface = self.my_font.render(str(self.curr_data - self.offset) + ' ДЖ', True, 'Black')
                 self.screen.blit(text_surface, (
                     self.coor[0] + round(0.2 * self.coor[2]),
                     self.coor[1] + round(0.5 * self.coor[3])))
@@ -321,7 +289,7 @@ class Info:
                         self.coor[1] + round(0.3 * self.coor[3]),
                         round(0.35 * self.coor[2]),
                         round(0.6 * self.coor[3])))
-                    text_surface = self.my_font.render(str(self.curr_data) + ' ДЖ', True, 'Black')
+                    text_surface = self.my_font.render(str(self.curr_data - self.offset) + ' ДЖ', True, 'Black')
                     self.screen.blit(text_surface, (
                         self.coor[0] + round(0.2 * self.coor[2]),
                         self.coor[1] + round(0.5 * self.coor[3])))
@@ -337,7 +305,7 @@ class Info:
                         self.coor[1] + round(0.3 * self.coor[3]) + round(0.6 * self.coor[3]) - round(self.curr_data * 0.6 * self.coor[3] / (self.curr_data + energy)),
                         round(0.35 * self.coor[2]),
                         round(self.curr_data * 0.6 * self.coor[3] / (self.curr_data + energy))))
-                    text_surface = self.my_font.render(str(self.curr_data) + ' ДЖ', True, 'Black')
+                    text_surface = self.my_font.render(str(self.curr_data - self.offset) + ' ДЖ', True, 'Black')
                     self.screen.blit(text_surface, (
                         self.coor[0] + round(0.2 * self.coor[2]),
                         self.coor[1] + round(0.5 * self.coor[3])))
@@ -370,9 +338,9 @@ class Info:
                         round(0.35 * self.coor[2]),
                         round(0.6 * self.coor[3]) - round(self.size)))
                 if energy < 0:
-                    text_surface = self.my_font.render(str(self.curr_data) + str(energy) + ' ДЖ', True, 'Black')
+                    text_surface = self.my_font.render(str(self.curr_data - self.offset) + str(energy) + ' ДЖ', True, 'Black')
                 else:
-                    text_surface = self.my_font.render(str(self.curr_data) + ' + ' + str(energy) + ' ДЖ', True, 'Black')
+                    text_surface = self.my_font.render(str(self.curr_data - self.offset) + ' + ' + str(energy) + ' ДЖ', True, 'Black')
                 self.screen.blit(text_surface, (
                     self.coor[0] + round(0.65 * self.coor[2]),
                     self.coor[1] + round(0.5 * self.coor[3])))
@@ -384,23 +352,32 @@ class Info:
         pygame.display.update()
 
 class Info_smart:
-    def __init__(self, coor, screen, init_energy):
+    def __init__(self, coor, screen, init_energy, min_temp, max_a, min_vol):
         self.iter = 0
         self.work = 0
         self.warm = 0
         self.energy = 0
         self.coor = (coor[0], coor[1], coor[2], coor[3])
         self.screen = screen
-        self.inf = Info(coor, screen, init_energy)
+        a = 1.5 * 8.31 * min_temp - max_a / min_vol
+        if a < 0:
+            self.inf = Info(coor, screen, init_energy, round(abs(a)) + 1)
+        else:
+            self.inf = Info(coor, screen, init_energy, 0)
 
-    def reinit(self, coor, screen, init_energy):
+
+    def reinit(self, coor, screen, init_energy, min_temp, max_a, min_vol):
         self.iter = 0
         self.work = 0
         self.warm = 0
         self.energy = 0
         self.coor = (coor[0], coor[1], coor[2], coor[3])
         self.screen = screen
-        self.inf.reinit(coor, screen, init_energy)
+        a = 1.5 * 8.31 * min_temp - max_a / min_vol
+        if a < 0:
+            self.inf = Info(coor, screen, init_energy, round(abs(a)) + 1)
+        else:
+            self.inf = Info(coor, screen, init_energy, 0)
 
     def next_iteration(self, work, energy, warm):
         self.iter += 1
@@ -428,12 +405,12 @@ pygame.display.set_icon(icon)
 running = True
 if running:
     scr.fill((114, 157, 224))
-    inf = Info_smart((0, 0, 800, 600), scr, 80)
+    inf = Info_smart((0, 0, 800, 600), scr, 80, 5, 600, 1)
 
     for s in range(200):
         pygame.time.wait(50)
         inf.take_picture(s)
-    inf.next_iteration(300, -20, -12)
+    inf.next_iteration(300, -200, -12)
     for s in range(200):
         pygame.time.wait(50)
         inf.take_picture(s)
@@ -442,7 +419,12 @@ if running:
     for s in range(200):
         pygame.time.wait(50)
         inf.take_picture(s)
-    inf.next_iteration(-350, -190, 12)
+    inf.next_iteration(-350, -300, 12)
+
+    for s in range(200):
+        pygame.time.wait(50)
+        inf.take_picture(s)
+    inf.next_iteration(-350, -9, 12)
 
     for s in range(200):
         pygame.time.wait(50)
