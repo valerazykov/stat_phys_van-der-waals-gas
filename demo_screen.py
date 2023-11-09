@@ -13,6 +13,7 @@ import physics as phys
 
 
 BUTTON_COLOR = (240, 240, 240)
+BUTTON_FONT_SIZE = 36
 
 
 class DemoScreen:
@@ -20,32 +21,24 @@ class DemoScreen:
         self.app = app
         self.screen = app.screen
         self.bg_color = (255, 255, 255)
-        self.font = 'corbel'
-        self.little_font = pygame.font.SysFont(self.font, 35)
-        self.middle_font = pygame.font.SysFont(self.font, 40, bold=True)
-        self.big_font = pygame.font.SysFont(self.font, 50)
-        """
-        self.buttons = [
-            Button(app, "Назад", (x_rs(1500), y_rs(1000)),
-                   (x_rs(300), y_rs(80)))
-        ]
-        """
 
-        # -----------------
         self.EPS = 1e-8
         width, height = app.width, app.height
 
-        alpha = 0.95
+        y_scale = 0.92
+        x_scale = 0.85
 
         def back_button_on_click():
             self.app.active_screen = self.app.menu_screen
 
-        self.back_button = Button(self.screen, width * alpha, height * alpha,
-                                  width * (1 - alpha), height * (1 - alpha),
+        self.back_button = Button(self.screen,
+                                  width * x_scale, height * y_scale,
+                                  width * (1 - x_scale),
+                                  height * (1 - y_scale),
                                   onClick=back_button_on_click,
                                   inactiveColour=BUTTON_COLOR,
                                   pressedColour=self.bg_color,
-                                  text="Назад")
+                                  text="Назад", fontSize=BUTTON_FONT_SIZE)
 
         self.user_input = UserInput(self.screen, 0, 0, width // 4, height // 2)
         self.pv_graph = PVGraph(self.screen, width // 4, 0, width * 3 // 4,
@@ -93,6 +86,10 @@ class DemoScreen:
         self.work = 0
         self.warmth_change = 0
         # self.entropy_change = None
+
+        self.saved_energy_change = 0
+        self.saved_work = 0
+        self.saved_warmth_change = 0
 
         self.N_STEPS = 200
         self.temp_arr = np.zeros(self.N_STEPS)
@@ -152,6 +149,11 @@ class DemoScreen:
 
             temps = (self.prev_temp, self.temp)
             vols = list(map(phys.vol_to_m3, (self.prev_vol, self.vol)))
+
+            self.saved_energy_change = self.energy_change
+            self.saved_work = self.work
+            self.saved_warmth_change = self.warmth_change
+
             self.energy_change = round(phys.energy_change(temps, vols, self.a))
             self.work = round(phys.work(temps, vols, self.a, self.b))
             self.warmth_change = round(phys.warmth_change(temps, vols,
@@ -199,6 +201,11 @@ class DemoScreen:
 
             temps = (self.prev_temp, self.temp)
             vols = list(map(phys.vol_to_m3, (self.prev_vol, self.vol)))
+
+            self.saved_energy_change = self.energy_change
+            self.saved_work = self.work
+            self.saved_warmth_change = self.warmth_change
+
             self.energy_change = round(phys.energy_change(temps, vols, self.a))
             self.work = round(phys.work(temps, vols, self.a, self.b))
             self.warmth_change = round(phys.warmth_change(temps, vols, self.a,
@@ -231,11 +238,6 @@ class DemoScreen:
         self.iteration_step = 0
 
     def _update_screen(self):
-        # self.screen.fill(self.bg_color)
-        """
-        for button in self.buttons:
-            button.draw_button()
-        """
         return
 
     def _check_events(self):
@@ -243,13 +245,6 @@ class DemoScreen:
         for event in events:
             if event.type == pygame.QUIT:
                 sys.exit()
-            """
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_position = pygame.mouse.get_pos()
-                self._check_buttons(mouse_position)
-            """
-
-        # -------------------------------
 
         pygame_widgets.update(events)
 
@@ -267,6 +262,10 @@ class DemoScreen:
             # Отображение последнего прорисованного экрана.
             # pygame.display.flip()
         else:
+            if self.iteration_step == 0:
+                self.info.draw(self.saved_work, self.saved_energy_change,
+                               self.saved_warmth_change,
+                               199, last_draw_for_199=True)
             it_time = self.ITERATION_TIME / self.user_input.get_anim_speed()
             if (time() - self.time_prev_step_started) > it_time / self.N_STEPS:
                 self.time_prev_step_started = time()
@@ -285,8 +284,10 @@ class DemoScreen:
                     self.mode_press,
                     self.mode_temp
                 )
+
                 self.info.draw(self.work, self.energy_change,
-                               self.warmth_change, self.iteration_step)
+                               self.warmth_change, self.iteration_step, False)
+
                 # Отображение последнего прорисованного экрана.
                 # pygame.display.flip()
                 self.iteration_step += 1
@@ -294,11 +295,3 @@ class DemoScreen:
                     self.iteration_step = 0
                     self.is_iteration = False
                     self.user_input.enable()
-
-    """
-    def _check_buttons(self, mouse_position):
-        for index, button in enumerate(self.buttons):
-            if button.rect.collidepoint(mouse_position):
-                if index == 0:
-                    self.app.active_screen = self.app.menu_screen
-    """

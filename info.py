@@ -50,7 +50,7 @@ class Info:
             round(0.35 * self.coor[2]),
             2))
 
-        def draw(self, work, energy, warm, step, last_draw_for_199 = True):
+    def draw(self, work, energy, warm, step, last_draw_for_199 = True):
         """
 
         :param work: работа на итерации
