@@ -83,6 +83,10 @@ class Info:
             return
         pygame.draw.rect(self.screen, (0, 0, 0), self.coor)
         pygame.draw.rect(self.screen, (255, 255, 255), (self.coor[0] + 2, self.coor[1] + 2, self.coor[2] - 4, self.coor[3] - 4))
+        for_114 = round((255 - 114) / 200)
+        for_100 = round((255 - 100) / 200)
+        for_157 = round((255 - 157) / 200)
+        for_224 = round((255 - 224) / 200)
         for_204 = round((255 - 204) / 200)
         for_255 = round(255 / 200)
         for_128 = round(127 / 200)
@@ -90,13 +94,13 @@ class Info:
             pygame.draw.rect(self.screen, (255 - step * for_255, 255 - step * for_204, 255 - step * for_255),
                              (self.coor[0], self.coor[1], round(self.coor[2] / 2), round(self.coor[3] / 5)))
         if work < 0:
-            pygame.draw.rect(self.screen, (255, 255 - step * for_255, 255 - step * for_255),
+            pygame.draw.rect(self.screen, (255 - step * for_204, 255 - step * for_255, 255 - step * for_255),
                              (self.coor[0], self.coor[1], round(self.coor[2] / 2), round(self.coor[3] / 5)))
         if warm > 0:
-            pygame.draw.rect(self.screen, (255, 255 - step * for_255, 255 - step * for_255),
+            pygame.draw.rect(self.screen, (255 - step * for_204, 255 - step * for_255, 255 - step * for_255),
                              (self.coor[0] + round(self.coor[2] / 2), self.coor[1], round(self.coor[2] / 2), round(self.coor[3] / 5)))
         if warm < 0:
-            pygame.draw.rect(self.screen, (255 - step * for_255, 255 - step * for_128, 255),
+            pygame.draw.rect(self.screen, (255 - step * for_114, 255 - step * for_157, 255 - step * for_224),
                              (self.coor[0] + round(self.coor[2] / 2), self.coor[1], round(self.coor[2] / 2), round(self.coor[3] / 5)))
         pygame.draw.rect(self.screen, (0, 0, 0),
                          (self.coor[0], self.coor[1] + round(self.coor[3] / 5), self.coor[2], 2))
