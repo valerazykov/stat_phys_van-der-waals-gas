@@ -443,8 +443,9 @@ class UserInput:
             self.apply_button2.enable()
             self.apply_button2.inactiveColour = BUTTON_COLOR
 
-    def update(self, events):
-        pygame_widgets.update(events)
+    def update(self, events, need_upd_all_widgets=True):
+        if need_upd_all_widgets:
+            pygame_widgets.update(events)
         a = self.a_slider.getValue()
         b = self.b_slider.getValue()
         p = self.p_slider.getValue()
