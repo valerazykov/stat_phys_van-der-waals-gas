@@ -201,14 +201,14 @@ class Piston:
                                         (width_piston - 2 * round(
                                             0.02 * min(self.coor[2],
                                                        self.coor[3])),
-                                         round(0.3 * self.coor[3]) + round(
+                                         round(0.3 * self.coor[3]) - 2 + round(
                                              offset)))
         if mode_press == 1:
             self.screen.blit(sand_d, (
             self.coor[0] + round(0.125 * self.coor[2]) + round(
                 0.02 * min(self.coor[2],
                            self.coor[3])),
-            self.coor[1]))
+            self.coor[1] + 2))
             sand = pygame.transform.scale(self.sand, (
                 width_piston - 2 * round(
                     0.02 * min(self.coor[2], self.coor[3])),
