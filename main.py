@@ -20,15 +20,12 @@ class App:
 
     def run(self):
         clock = pygame.time.Clock()
-
-        """Запуск основного цикла"""
+        pygame.display.set_caption("Van der Waals gas")
+        icon = pygame.image.load('images/icon.png')
+        pygame.display.set_icon(icon)
+        # Запуск основного цикла
         while True:
-            # Отслеживание событий клавиатуры и мыши.
-            self.active_screen._check_events()
-            self.active_screen._update_screen()
-            # Отображение последнего прорисованного экрана.
-            pygame.display.flip()
-
+            self.active_screen.update_screen()
             clock.tick(self.fps)
 
 

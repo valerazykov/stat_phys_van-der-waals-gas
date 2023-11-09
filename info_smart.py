@@ -353,6 +353,16 @@ class Info:
 
 class Info_smart:
     def __init__(self, coor, screen, init_energy, min_temp, max_a, min_vol):
+        """
+
+        :param coor: кортеж из 4 значений: х координата левого верхнего угла,
+            у координата левого верхнего угла, ширина области, высота области
+        :param screen: объект экрана
+        :param init_energy: начальное значение внутренней энергии
+        :param min_temp: минимальная температура
+        :param max_a: максимальное a
+        :param min_vol: минимальный объем для данных a и b
+        """
         self.iter = 0
         self.work = 0
         self.warm = 0
@@ -380,6 +390,12 @@ class Info_smart:
             self.inf = Info(coor, screen, init_energy, 0)
 
     def next_iteration(self, work, energy, warm):
+        """
+
+        :param work: изменение работы
+        :param energy: изменение внутренней энергии
+        :param
+        """
         self.iter += 1
         self.work = work
         self.warm = warm
@@ -387,48 +403,55 @@ class Info_smart:
         self.inf.draw(150, self.work, self.energy, self.warm, 7, True)
         self.energy = energy
     def take_picture(self, step):
+        """
+
+        :param step: номер шага в анимации,
+            можно вызывать сколько угодно раз для любого номера шага.
+        """
         if self.iter == 0:
             self.inf.draw(150, self.work, self.energy, self.warm, step, False)
         else:
             self.inf.draw(250, self.work, self.energy, self.warm, step, False)
 
-pygame.init()
-scr = pygame.display.set_mode((1700, 1000))
-pygame.display.set_caption("Our statphis2")
-icon = pygame.image.load('images/icon.png')
-pygame.display.set_icon(icon)
-#pygame.draw.rect(self.screen, (0, 0, 0), (self.coor[0] + round(0.1 * self.coor[2]), self.coor[1] + round(0.9 * self.coor[3]), round(0.35 * self.coor[2]), 2))
-#        pygame.draw.rect(self.screen, (0, 0, 0), (
-#        self.coor[0] + round(0.55 * self.coor[2]), self.coor[1] + round(0.3 * self.coor[3]), round(0.35 * self.coor[2]),
-#        round(0.6 * self.coor[3])))
 
-running = True
-if running:
-    scr.fill((114, 157, 224))
-    inf = Info_smart((0, 0, 800, 600), scr, 80, 5, 600, 1)
+if __name__ == '__main__':
+    pygame.init()
+    scr = pygame.display.set_mode((1700, 1000))
+    pygame.display.set_caption("Our statphis2")
+    icon = pygame.image.load('images/icon.png')
+    pygame.display.set_icon(icon)
+    #pygame.draw.rect(self.screen, (0, 0, 0), (self.coor[0] + round(0.1 * self.coor[2]), self.coor[1] + round(0.9 * self.coor[3]), round(0.35 * self.coor[2]), 2))
+    #        pygame.draw.rect(self.screen, (0, 0, 0), (
+    #        self.coor[0] + round(0.55 * self.coor[2]), self.coor[1] + round(0.3 * self.coor[3]), round(0.35 * self.coor[2]),
+    #        round(0.6 * self.coor[3])))
 
-    for s in range(200):
-        pygame.time.wait(50)
-        inf.take_picture(s)
-    inf.next_iteration(300, -200, -12)
-    for s in range(200):
-        pygame.time.wait(50)
-        inf.take_picture(s)
-    inf.next_iteration(-350, 190, 12)
+    running = True
+    if running:
+        scr.fill((114, 157, 224))
+        inf = Info_smart((0, 0, 800, 600), scr, 80, 5, 600, 1)
 
-    for s in range(200):
-        pygame.time.wait(50)
-        inf.take_picture(s)
-    inf.next_iteration(-350, -300, 12)
+        for s in range(200):
+            pygame.time.wait(50)
+            inf.take_picture(s)
+        inf.next_iteration(300, -200, -12)
+        for s in range(200):
+            pygame.time.wait(50)
+            inf.take_picture(s)
+        inf.next_iteration(-350, 190, 12)
 
-    for s in range(200):
-        pygame.time.wait(50)
-        inf.take_picture(s)
-    inf.next_iteration(-350, -9, 12)
+        for s in range(200):
+            pygame.time.wait(50)
+            inf.take_picture(s)
+        inf.next_iteration(-350, -300, 12)
 
-    for s in range(200):
-        pygame.time.wait(50)
-        inf.take_picture(s)
-    inf.next_iteration(-350, -9, 12)
-    while 1:
-        u = 9
+        for s in range(200):
+            pygame.time.wait(50)
+            inf.take_picture(s)
+        inf.next_iteration(-350, -9, 12)
+
+        for s in range(200):
+            pygame.time.wait(50)
+            inf.take_picture(s)
+        inf.next_iteration(-350, -9, 12)
+        while 1:
+            u = 9

@@ -7,7 +7,7 @@ import numpy as np
 
 from user_input import UserInput
 from piston import Piston
-from info import Info
+from info_smart import Info_smart
 from pv_graph import PVGraph
 import physics as phys
 
@@ -33,8 +33,8 @@ class DemoScreen:
 
         self.back_button = Button(self.screen,
                                   width * x_scale, height * y_scale,
-                                  width * (1 - x_scale),
-                                  height * (1 - y_scale),
+                                  round(width * (1 - x_scale)),
+                                  round(height * (1 - y_scale)),
                                   onClick=back_button_on_click,
                                   inactiveColour=BUTTON_COLOR,
                                   pressedColour=self.bg_color,
@@ -48,7 +48,7 @@ class DemoScreen:
                                 (self.user_input.MIN_VOL,
                                  self.user_input.MAX_VOL))
         self.piston = Piston(
-            (0, height * 0.55, width // 3, height * (1 - 0.55)),
+            (0, round(height * 0.55), width // 3, round(height * (1 - 0.55))),
             (self.user_input.temps[0] - self.EPS,
              self.user_input.temps[-1] + self.EPS),
             (self.user_input.MIN_VOL - self.EPS,
@@ -58,7 +58,8 @@ class DemoScreen:
             self.screen
         )
         self.info = Info(
-            (width * 0.45, height * 0.55, width // 3, height * (1 - 0.55)),
+            (round(width * 0.45), round(height * 0.55),
+             width // 3, round(height * (1 - 0.55))),
             self.screen,
             round(phys.energy(
                 self.user_input.get_confirmed_temp(),
@@ -115,7 +116,8 @@ class DemoScreen:
                                  (self.user_input.MIN_VOL,
                                   self.user_input.MAX_VOL))
             self.piston.reinit(
-                (0, height * 0.55, width // 3, height * (1 - 0.55)),
+                (0, round(height * 0.55),
+                 width // 3, round(height * (1 - 0.55))),
                 (self.user_input.temps[0] - self.EPS,
                  self.user_input.temps[-1] + self.EPS),
                 (self.user_input.MIN_VOL - self.EPS,
@@ -126,7 +128,8 @@ class DemoScreen:
             )
 
             self.info.reinit(
-                (width * 0.45, height * 0.55, width // 3, height * (1 - 0.55)),
+                (round(width * 0.45), round(height * 0.55),
+                 width // 3, round(height * (1 - 0.55))),
                 self.screen,
                 round(phys.energy(
                     self.user_input.get_confirmed_temp(),
@@ -237,10 +240,7 @@ class DemoScreen:
         self.user_input.set_on_click_funcs(on_click1, on_click2, on_click3)
         self.iteration_step = 0
 
-    def _update_screen(self):
-        return
-
-    def _check_events(self):
+    def update_screen(self):
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
@@ -260,7 +260,7 @@ class DemoScreen:
                            199, last_draw_for_199=False)
 
             # Отображение последнего прорисованного экрана.
-            # pygame.display.flip()
+            pygame.display.flip()
         else:
             if self.iteration_step == 0:
                 self.info.draw(self.saved_work, self.saved_energy_change,
@@ -289,7 +289,7 @@ class DemoScreen:
                                self.warmth_change, self.iteration_step, False)
 
                 # Отображение последнего прорисованного экрана.
-                # pygame.display.flip()
+                pygame.display.flip()
                 self.iteration_step += 1
                 if self.iteration_step == self.N_STEPS:
                     self.iteration_step = 0

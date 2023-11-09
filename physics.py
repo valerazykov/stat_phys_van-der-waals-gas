@@ -72,8 +72,7 @@ def vol_to_m3(vol):
 
 
 def energy(temp, vol, a, mole=1, freedoms=3):
-    res = mole * freedoms * R * temp / 2 - mole * mole * a / vol
-    return abs(res)
+    return mole * freedoms * R * temp / 2 - mole * mole * a / vol
 
 
 def energy_change(temp, vol, a, mole=1, freedoms=3):
