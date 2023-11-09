@@ -69,7 +69,8 @@ class Piston:
             raise ValueError("Press_invalid")
         if mode_press not in {-1, 0, 1} or mode_temp not in {-1, 0, 1}:
             raise ValueError("Mode_invalid")
-        pygame.draw.rect(self.screen, (255, 255, 255), self.coor)
+        pygame.draw.rect(self.screen, (0, 0, 0), self.coor)
+        pygame.draw.rect(self.screen, (255, 255, 255), (self.coor[0] + 2, self.coor[1] + 2, self.coor[2] - 4, self.coor[3] - 4))
         pygame.draw.rect(self.screen, (0, 0, 0),
                          (self.coor[0] + round(0.7 * self.coor[2]),
                           self.coor[1],
