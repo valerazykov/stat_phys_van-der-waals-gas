@@ -81,7 +81,8 @@ class Info:
             self.old_data = self.curr_data
             self.curr_data += energy
             return
-        pygame.draw.rect(self.screen, (255, 255, 255), self.coor)
+        pygame.draw.rect(self.screen, (0, 0, 0), self.coor)
+        pygame.draw.rect(self.screen, (255, 255, 255), (self.coor[0] + 2, self.coor[1] + 2, self.coor[2] - 4, self.coor[3] - 4))
         for_204 = round((255 - 204) / 200)
         for_255 = round(255 / 200)
         for_128 = round(127 / 200)
