@@ -102,7 +102,7 @@ class Info:
             if step < 100:
                 self.lines()
                 pygame.draw.rect(self.screen, (255, 128, 0), (
-                    self.coor[0] + round(0.60 * self.coor[2]) - round(0.45 * self.coor[2] / 100 * step), self.coor[1] + round(0.3 * self.coor[3]),
+                    self.coor[0] + round(0.55 * self.coor[2]) - round(0.45 * self.coor[2] / 100 * step), self.coor[1] + round(0.3 * self.coor[3]),
                     round(0.35 * self.coor[2]),
                     round(0.6 * self.coor[3])))
                 text_surface = self.my_font.render(str(self.curr_data) + ' ДЖ', True, 'Black')
