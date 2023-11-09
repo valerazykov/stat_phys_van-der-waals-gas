@@ -139,10 +139,10 @@ class Piston:
         for t in range(11):
             if t % 2 == 1:
                 continue
-            text_surface = self.my_font.render(str(round(self.limit_temp[0] +
+            text_surface = self.my_font.render(str(round((self.limit_temp[0] +
                                                          (self.limit_temp[1] -
                                                           self.limit_temp[0]) *
-                                                         t / 10)) + ' K',
+                                                         t / 10) * 10) / 10) + ' K',
                                                True, 'Black')
             self.screen.blit(text_surface,
                              (self.coor[0] + round(0.85 * self.coor[2]),
@@ -201,14 +201,14 @@ class Piston:
                                         (width_piston - 2 * round(
                                             0.02 * min(self.coor[2],
                                                        self.coor[3])),
-                                         round(0.3 * self.coor[3]) + round(
+                                         round(0.3 * self.coor[3]) - 2 + round(
                                              offset)))
         if mode_press == 1:
             self.screen.blit(sand_d, (
             self.coor[0] + round(0.125 * self.coor[2]) + round(
                 0.02 * min(self.coor[2],
                            self.coor[3])),
-            self.coor[1]))
+            self.coor[1] + 2))
             sand = pygame.transform.scale(self.sand, (
                 width_piston - 2 * round(
                     0.02 * min(self.coor[2], self.coor[3])),

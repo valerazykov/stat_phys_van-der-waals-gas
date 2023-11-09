@@ -265,7 +265,7 @@ class DemoScreen:
             self.pv_graph.draw(cur_temp_ind, self.vol, self.press)
             self.piston.draw(self.temp, self.vol, self.press, 0, 0)
 
-            self.info.take_picture(199)
+            self.info.take_picture(self.N_STEPS - 1)
         else:
             self.pv_graph.draw(
                 cur_temp_ind,
