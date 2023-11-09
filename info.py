@@ -50,14 +50,14 @@ class Info:
             round(0.35 * self.coor[2]),
             2))
 
-    def draw(self, work, energy, warm, step, last_draw_for_199=True):
+        def draw(self, work, energy, warm, step, last_draw_for_199 = True):
         """
 
         :param work: работа на итерации
         :param energy: изменение внутренней энергии
         :param warm: полученное или отданное количество теплоты
         :param step: номер шага отрисовки (от 0 до 199 включительно)
-        :param last_draw_for_199: по умолчанию считается, что функция от step = 199 вызовется 1 раз, если нужно более 1 раза,
+        :по умолчанию считается, что функция от step = 199 вызовется 1 раз, если нужно более 1 раза,
         то last_draw_for_199 = False, но последний раз обязательно нужно вызвать last_draw_for_199 = True!!!
         Иначе значения не сохранятся
         """
@@ -121,6 +121,7 @@ class Info:
                     self.screen.blit(text_surface, (
                         self.coor[0] + round(0.2 * self.coor[2]),
                         self.coor[1] + round(0.5 * self.coor[3])))
+                    pygame.display.update()
                     return
                 self.lines()
                 new_h = round(self.curr_data * 0.6 * self.coor[3] / (self.curr_data + energy))
@@ -194,6 +195,12 @@ class Info:
                         self.coor[1] + round(0.3 * self.coor[3]) + round(0.6 * self.coor[3]) - self.old_c[3],
                         round(0.35 * self.coor[2]),
                         self.old_c[3]))
+                if step == 199 and energy < 0:
+                    pygame.draw.rect(self.screen, (255, 0, 0), (
+                        self.coor[0] + round(0.55 * self.coor[2]),
+                        self.coor[1] + round(0.3 * self.coor[3]),
+                        round(0.35 * self.coor[2]),
+                        round(0.6 * self.coor[3]) - round(self.size)))
                 if energy < 0:
                     text_surface = self.my_font.render(str(self.curr_data) + str(energy) + ' ДЖ', True, 'Black')
                 else:
@@ -337,6 +344,12 @@ class Info:
                         self.coor[0] + round(0.55 * self.coor[2]),
                         self.coor[1] + round(0.3 * self.coor[3]) + round(0.6 * self.coor[3]) - self.old_c[3], round(0.35 * self.coor[2]),
                         self.old_c[3]))
+                if step == 199 and energy < 0:
+                    pygame.draw.rect(self.screen, (255, 0, 0), (
+                        self.coor[0] + round(0.55 * self.coor[2]),
+                        self.coor[1] + round(0.3 * self.coor[3]),
+                        round(0.35 * self.coor[2]),
+                        round(0.6 * self.coor[3]) - round(self.size)))
                 if energy < 0:
                     text_surface = self.my_font.render(str(self.curr_data) + str(energy) + ' ДЖ', True, 'Black')
                 else:
@@ -344,11 +357,12 @@ class Info:
                 self.screen.blit(text_surface, (
                     self.coor[0] + round(0.65 * self.coor[2]),
                     self.coor[1] + round(0.5 * self.coor[3])))
+
+
                 if step == 199 and last_draw_for_199 == True:
                     self.old_data = self.curr_data
                     self.curr_data += energy
         pygame.display.update()
-
 
 if __name__ == "__main__":
     pygame.init()
