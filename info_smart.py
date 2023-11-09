@@ -397,7 +397,7 @@ class Info_smart:
         self.iter = 0
         self.work = 0
         self.warm = 0
-        self.energy = init_energy
+        self.energy = 0
         self.coor = (coor[0], coor[1], coor[2], coor[3])
         self.screen = screen
         self.inf.reinit(coor, screen, init_energy)
