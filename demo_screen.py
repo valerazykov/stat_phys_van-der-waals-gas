@@ -57,8 +57,8 @@ class DemoScreen:
             self.screen
         )
         self.info = Info_smart(
-            (round(width * 0.45), round(height * 0.55),
-             width // 3, round(height * (1 - 0.55))),
+            (round(width * 0.42), round(height * 0.55),
+             round(width * 0.4), round(height * (1 - 0.55))),
             self.screen,
             round(phys.energy(
                 self.user_input.get_confirmed_temp(),
@@ -130,8 +130,8 @@ class DemoScreen:
             )
 
             self.info.reinit(
-                (round(width * 0.45), round(height * 0.55),
-                 width // 3, round(height * (1 - 0.55))),
+                (round(width * 0.42), round(height * 0.55),
+                 round(width * 0.4), round(height * (1 - 0.55))),
                 self.screen,
                 round(phys.energy(
                     self.user_input.get_confirmed_temp(),
