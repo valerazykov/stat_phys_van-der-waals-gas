@@ -11,7 +11,6 @@ from info_smart import Info_smart
 from pv_graph import PVGraph
 import physics as phys
 
-
 BUTTON_COLOR = (240, 240, 240)
 BUTTON_FONT_SIZE = 36
 
@@ -22,7 +21,7 @@ class DemoScreen:
         self.screen = app.screen
         self.bg_color = (255, 255, 255)
 
-        self.EPS = 1e-8
+        self.EPS = 1e-12
         width, height = app.width, app.height
 
         y_scale = 0.92
@@ -57,7 +56,7 @@ class DemoScreen:
              self.user_input.MAX_TEMP_LIST_p + self.EPS),
             self.screen
         )
-        self.info = Info(
+        self.info = Info_smart(
             (round(width * 0.45), round(height * 0.55),
              width // 3, round(height * (1 - 0.55))),
             self.screen,
@@ -65,7 +64,10 @@ class DemoScreen:
                 self.user_input.get_confirmed_temp(),
                 phys.vol_to_m3(self.user_input.get_confirmed_vol_cm3()),
                 self.user_input.get_confirmed_a_b_SI()[0]
-            ))
+            )),
+            self.user_input.temps[0] - self.EPS,
+            self.user_input.MAX_a + self.EPS,
+            self.user_input.MIN_VOL_M3 - self.EPS
         )
 
         self.ITERATION_TIME = 4
@@ -135,7 +137,10 @@ class DemoScreen:
                     self.user_input.get_confirmed_temp(),
                     phys.vol_to_m3(self.user_input.get_confirmed_vol_cm3()),
                     self.user_input.get_confirmed_a_b_SI()[0]
-                ))
+                )),
+                self.user_input.temps[0] - self.EPS,
+                self.user_input.MAX_a + self.EPS,
+                self.user_input.MIN_VOL_M3 - self.EPS
             )
 
         def on_click2():
@@ -189,6 +194,8 @@ class DemoScreen:
 
             self.user_input.disable()
             self.time_prev_step_started = time()
+            self.info.next_iteration(self.work, self.energy_change,
+                                     self.warmth_change)
 
         def on_click3():
             self.prev_temp = self.user_input.confirmed_T
@@ -236,6 +243,8 @@ class DemoScreen:
 
             self.user_input.disable()
             self.time_prev_step_started = time()
+            self.info.next_iteration(self.work, self.energy_change,
+                                     self.warmth_change)
 
         self.user_input.set_on_click_funcs(on_click1, on_click2, on_click3)
         self.iteration_step = 0
@@ -246,52 +255,41 @@ class DemoScreen:
             if event.type == pygame.QUIT:
                 sys.exit()
 
+        self.screen.fill(self.bg_color)
         pygame_widgets.update(events)
 
         cur_temp_ind = self.user_input.get_confirmed_temp_ind()
         self.user_input.update(events, need_upd_all_widgets=False)
 
         if not self.is_iteration:
-            self.screen.fill(self.bg_color)
-            self.user_input.update(events)
             self.pv_graph.draw(cur_temp_ind, self.vol, self.press)
             self.piston.draw(self.temp, self.vol, self.press, 0, 0)
-            self.info.draw(self.work, self.energy_change, self.warmth_change,
-                           199, last_draw_for_199=False)
 
-            # Отображение последнего прорисованного экрана.
-            pygame.display.flip()
+            self.info.take_picture(199)
         else:
-            if self.iteration_step == 0:
-                self.info.draw(self.saved_work, self.saved_energy_change,
-                               self.saved_warmth_change,
-                               199, last_draw_for_199=True)
+            self.pv_graph.draw(
+                cur_temp_ind,
+                self.vol_arr[self.iteration_step],
+                self.press_arr[self.iteration_step]
+            )
+            self.piston.draw(
+                self.temp_arr[self.iteration_step],
+                self.vol_arr[self.iteration_step],
+                self.press_arr[self.iteration_step],
+                self.mode_press,
+                self.mode_temp
+            )
+
+            self.info.take_picture(self.iteration_step)
+
             it_time = self.ITERATION_TIME / self.user_input.get_anim_speed()
             if (time() - self.time_prev_step_started) > it_time / self.N_STEPS:
                 self.time_prev_step_started = time()
-
-                self.screen.fill(self.bg_color)
-                self.user_input.update(events)
-                self.pv_graph.draw(
-                    cur_temp_ind,
-                    self.vol_arr[self.iteration_step],
-                    self.press_arr[self.iteration_step]
-                )
-                self.piston.draw(
-                    self.temp_arr[self.iteration_step],
-                    self.vol_arr[self.iteration_step],
-                    self.press_arr[self.iteration_step],
-                    self.mode_press,
-                    self.mode_temp
-                )
-
-                self.info.draw(self.work, self.energy_change,
-                               self.warmth_change, self.iteration_step, False)
-
-                # Отображение последнего прорисованного экрана.
-                pygame.display.flip()
                 self.iteration_step += 1
                 if self.iteration_step == self.N_STEPS:
                     self.iteration_step = 0
                     self.is_iteration = False
                     self.user_input.enable()
+
+        # Отображение последнего прорисованного экрана.
+        pygame.display.flip()
