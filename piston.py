@@ -2,7 +2,7 @@ import pygame
 
 
 class Piston:
-    def __init__(self, coor, limit_temp, limit_val, limit_press, screen):
+    def __init__(self, coor, limit_temp, limit_val, limit_press, screen, temps):
         """
         :param coor: кортеж (х координата левого верхнего угла,
             у координата левого верхнего угла, ширина экрана, высота экрана)
@@ -31,8 +31,10 @@ class Piston:
         self.temp_f = 0
         self.k = 1
         self.count_step = round(0.025 * self.coor[2])
+        self.temps = temps
+        self.temps = sorted(self.temps, reverse=True)
 
-    def reinit(self, coor, limit_temp, limit_val, limit_press, screen):
+    def reinit(self, coor, limit_temp, limit_val, limit_press, screen, temps):
         self.screen = screen
         self.coor = coor
         self.limit_temp = limit_temp
@@ -44,6 +46,8 @@ class Piston:
         self.temp_f = 0
         self.k = 1
         self.count_step = round(0.025 * self.coor[2])
+        self.temps = temps
+        self.temps = sorted(self.temps, reverse=True)
 
     def draw(self, temp, vol, press, mode_press, mode_temp):
         """
@@ -136,17 +140,13 @@ class Piston:
             self.temp_f += self.k
             if abs(self.temp_f) == self.count_step:
                 self.k *= -1
-        for t in range(11):
-            if t % 2 == 1:
-                continue
-            text_surface = self.my_font.render(str(round((self.limit_temp[0] +
-                                                         (self.limit_temp[1] -
-                                                          self.limit_temp[0]) *
-                                                         t / 10) * 10) / 10) + ' K',
+        
+        for t in range(5):
+            text_surface = self.my_font.render(str(self.temps[t]) + ' K',
                                                True, 'Black')
             self.screen.blit(text_surface,
                              (self.coor[0] + round(0.85 * self.coor[2]),
-                              self.coor[1] + round((0.675 - t * 0.042) *
+                              self.coor[1] + round((0.675 -  (self.temps[t] - self.limit_temp[0]) * 0.42 / (self.limit_temp[1] - self.limit_temp[0])) *
                                                    self.coor[3])))
         # end_temp
         # begin_val
