@@ -137,10 +137,7 @@ class Info:
                 self.size = round(0.6 * self.coor[3])
                 if energy <= 0:
                     self.size = (1 + energy / self.curr_data) * 0.6 * self.coor[3]
-                    text_surface = self.my_font.render(str(self.curr_data - self.offset) + ' ДЖ', True, 'Black')
-                    self.screen.blit(text_surface, (
-                        self.coor[0] + round(0.2 * self.coor[2]),
-                        self.coor[1] + round(0.5 * self.coor[3])))
+                    
                     self.old_c = (
                         self.coor[0] + round(0.55 * self.coor[2]) - round(
                             0.45 * self.coor[2]),
@@ -155,10 +152,7 @@ class Info:
                             self.curr_data * 0.6 * self.coor[3] / (self.curr_data + energy)),
                         round(0.35 * self.coor[2]),
                         round(self.curr_data * 0.6 * self.coor[3] / (self.curr_data + energy))), 0, self.rad)
-                    text_surface = self.my_font.render(str(self.curr_data - self.offset) + ' ДЖ', True, 'Black')
-                    self.screen.blit(text_surface, (
-                        self.coor[0] + round(0.2 * self.coor[2]),
-                        self.coor[1] + round(0.5 * self.coor[3])))
+                    
                     self.old_c = (
                         self.coor[0] + round(0.55 * self.coor[2]) - round(
                             0.45 * self.coor[2]),
