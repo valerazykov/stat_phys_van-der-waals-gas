@@ -189,6 +189,27 @@ def calc_min_press_for_temp_list(a, b, temp_left, min_vol, max_vol):
     return minimum(p, vol, ivl)
 
 
+def calc_borders_for_press_vol_temp_list(a, b, temp_left, temp_right):
+    """
+    Возвращает границы для давления и объема для всего списка температур.
+    Причем правая граница объема расширена по сравнению с результатом
+    функции calc_max_vol, чтобы изотермы были информативными.
+    """
+
+    min_vol = calc_min_vol(a, b, temp_left)
+    max_vol = calc_max_vol(a, b, temp_right)
+    min_p = calc_min_press_for_temp_list(a, b, temp_left, min_vol, max_vol)
+
+    vol = symbols("vol", real=True)
+    expr = R * temp_right / (vol - b) - a / vol ** 2 - min_p
+    max_vol = max(solve(expr, vol))
+
+    min_p = calc_min_press_for_temp_list(a, b, temp_left, min_vol, max_vol)
+    max_p = calc_max_press_for_temp_list(a, b, temp_right, min_vol, max_vol)
+
+    return min_p, max_p, min_vol, max_vol
+
+
 def calc_max_press_for_temp_list(a, b, temp_right, min_vol, max_vol):
     """
     Посчитать верхнюю границу для p, в зависимости от верхней границы

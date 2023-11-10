@@ -31,6 +31,7 @@ class PVGraph:
                     phys.calc_press(temp, phys.vol_to_m3(vol), a, b)))
             )
             self.isotherms[i] = func(self.vols)
+            self.log_vols = np.log(self.vols)
 
     def __init__(
             self, win, x, y, width, height,
@@ -66,12 +67,12 @@ class PVGraph:
         for i in range(len(self.temps_list)):
             is_current = (i == temp_ind)
             color = "green" if is_current else "black"
-            ax.plot(self.vols, self.isotherms[i], color=color)
+            ax.plot(self.log_vols, self.isotherms[i], color=color)
 
-        ax.scatter([vol], [math.log(press)], color="red")
+        ax.scatter([math.log(vol)], [math.log(press)], color="red")
 
         ax.set_title("pV-график", fontsize=self.TITLE_FONT_SIZE)
-        ax.set_xlabel("V (см^3)", labelpad=self.X_LABEL_PAD,
+        ax.set_xlabel("ln(V)", labelpad=self.X_LABEL_PAD,
                       fontsize=self.AX_FONT_SIZE, loc="right")
         ax.set_ylabel("ln(p)", labelpad=self.Y_LABEL_PAD,
                       fontsize=self.AX_FONT_SIZE, loc="top")

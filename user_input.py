@@ -321,14 +321,11 @@ class UserInput:
 
     def _calc_borders_for_press_vol_temp_list(self):
         a, b = self.get_confirmed_a_b_SI()
-        min_vol = phys.calc_min_vol(a, b, self.temps[0])
-        max_vol = phys.calc_max_vol(a, b, self.temps[-1])
-        min_p = phys.calc_min_press_for_temp_list(
-            a, b, self.temps[0], min_vol, max_vol
-        )
-        max_p = phys.calc_max_press_for_temp_list(
-            a, b, self.temps[-1], min_vol, max_vol
-        )
+
+        min_p, max_p, min_vol, max_vol = \
+            phys.calc_borders_for_press_vol_temp_list(
+                a, b, self.temps[0], self.temps[-1]
+            )
 
         return (phys.p_to_atm(min_p), phys.p_to_atm(max_p),
                 phys.vol_to_cm3(min_vol), phys.vol_to_cm3(max_vol),

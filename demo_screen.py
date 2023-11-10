@@ -4,6 +4,7 @@ from pygame_widgets.button import Button
 import sys
 from time import time
 import numpy as np
+import math
 
 from user_input import UserInput
 from piston import Piston
@@ -144,6 +145,11 @@ class DemoScreen:
                 self.user_input.MIN_VOL_M3 - self.EPS
             )
 
+            self.user_input.apply_button2.disable()
+            self.user_input.apply_button2.inactiveColour = WHITE
+            self.user_input.apply_button3.disable()
+            self.user_input.apply_button3.inactiveColour = WHITE
+
         def on_click2():
             if self.user_input.prev_confirmed_T is not None:
                 self.prev_temp = self.user_input.prev_confirmed_T
@@ -232,8 +238,12 @@ class DemoScreen:
 
             self.is_iteration = True
             self.temp_arr[:] = np.float64(self.temp)
-            self.vol_arr = np.linspace(
-                np.float64(self.prev_vol), np.float64(self.vol), self.N_STEPS)
+            self.vol_arr = np.logspace(
+                np.float64(math.log(self.prev_vol)),
+                np.float64(math.log(self.vol)),
+                self.N_STEPS,
+                base=np.e
+            )
 
             func = np.vectorize(
                 lambda v: phys.p_to_atm(
@@ -281,11 +291,11 @@ class DemoScreen:
             )
             self.info.take_picture(self.iteration_step)
 
-            it_time = self.ITERATION_TIME / self.user_input.get_anim_speed()
-            if (time() - self.time_prev_step_started) > it_time / self.N_STEPS:
+            if ((time() - self.time_prev_step_started) >
+                    self.ITERATION_TIME / self.N_STEPS):
                 self.time_prev_step_started = time()
-                self.iteration_step += 1
-                if self.iteration_step == self.N_STEPS:
+                self.iteration_step += self.user_input.get_anim_speed()
+                if self.iteration_step >= self.N_STEPS:
                     self.iteration_step = 0
                     self.is_iteration = False
                     self.user_input.enable()
