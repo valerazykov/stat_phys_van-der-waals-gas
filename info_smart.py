@@ -113,7 +113,7 @@ class Info:
             pygame.draw.rect(self.screen, (
             255 - step * for_204, 255 - step * for_255, 255 - step * for_255),
                              (self.coor[0] + 2 + round(self.coor[2] / 2),
-                              self.coor[1] + 2, (round(self.coor[2] / 2) - 6),
+                              self.coor[1] + 2, (round(self.coor[2] / 2) - 4),
                               (round(self.coor[3] / 5) - 2)))
         if warm < 0:
             pygame.draw.rect(self.screen, (
