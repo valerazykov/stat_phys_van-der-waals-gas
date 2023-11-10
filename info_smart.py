@@ -356,7 +356,6 @@ class Info:
                 if switch == True:
                     self.old_data = self.curr_data
                     self.curr_data += energy
-        pygame.display.update()
 
 class Info_smart:
     def __init__(self, coor, screen, init_energy, min_temp, max_a, min_vol):

@@ -11,6 +11,7 @@ from info_smart import Info_smart
 from pv_graph import PVGraph
 import physics as phys
 
+WHITE = (255, 255, 255)
 BUTTON_COLOR = (240, 240, 240)
 BUTTON_FONT_SIZE = 36
 
@@ -19,7 +20,7 @@ class DemoScreen:
     def __init__(self, app):
         self.app = app
         self.screen = app.screen
-        self.bg_color = (255, 255, 255)
+        self.bg_color = WHITE
 
         self.EPS = 1e-12
         width, height = app.width, app.height
@@ -264,7 +265,6 @@ class DemoScreen:
         if not self.is_iteration:
             self.pv_graph.draw(cur_temp_ind, self.vol, self.press)
             self.piston.draw(self.temp, self.vol, self.press, 0, 0)
-
             self.info.take_picture(self.N_STEPS - 1)
         else:
             self.pv_graph.draw(
@@ -279,7 +279,6 @@ class DemoScreen:
                 self.mode_press,
                 self.mode_temp
             )
-
             self.info.take_picture(self.iteration_step)
 
             it_time = self.ITERATION_TIME / self.user_input.get_anim_speed()

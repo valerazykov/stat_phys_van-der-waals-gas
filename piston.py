@@ -271,4 +271,4 @@ class Piston:
                 round(0.02 * min(self.coor[2], self.coor[3])),
                 round(0.02 * min(self.coor[2], self.coor[3])),
                 round(0.02 * min(self.coor[2], self.coor[3]))))
-        pygame.display.update()
+
