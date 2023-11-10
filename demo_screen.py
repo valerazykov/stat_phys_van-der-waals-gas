@@ -55,7 +55,7 @@ class DemoScreen:
         alpha = 0.6
         betta = 0.42
         self.piston = Piston(
-            (round(width * betta) - width * 10 // 30,
+            (round(width * betta) - width * 11 // 30,
              round(height * alpha) - BORGER_WIDTH,
              width * 10 // 30, round(height * (1 - alpha))),
             (self.user_input.temps[0] - self.EPS,
@@ -68,9 +68,9 @@ class DemoScreen:
             temps=self.user_input.temps
         )
         self.info = Info_smart(
-            (round(width * betta) + width // 20,
+            (round(width * betta),
              round(height * alpha) - BORGER_WIDTH,
-             width // 3, round(height * (1 - alpha))),
+             width * 0.4, round(height * (1 - alpha))),
             self.screen,
             round(phys.energy(
                 self.user_input.get_confirmed_temp(),
