@@ -130,7 +130,7 @@ class DemoScreen:
                                  (self.user_input.MIN_VOL,
                                   self.user_input.MAX_VOL))
             self.piston.reinit(
-                (round(width * betta) - width * 10 // 30,
+                (round(width * betta) - width * 11 // 30,
                  round(height * alpha) - BORGER_WIDTH,
                  width * 10 // 30, round(height * (1 - alpha))),
                 (self.user_input.temps[0] - self.EPS,
@@ -144,9 +144,9 @@ class DemoScreen:
             )
 
             self.info.reinit(
-                (round(width * betta) + width // 20,
+                (round(width * betta),
                  round(height * alpha) - BORGER_WIDTH,
-                 width // 3, round(height * (1 - alpha))),
+                 width * 0.4, round(height * (1 - alpha))),
                 self.screen,
                 round(phys.energy(
                     self.user_input.get_confirmed_temp(),
@@ -154,7 +154,7 @@ class DemoScreen:
                     self.user_input.get_confirmed_a_b_SI()[0]
                 )),
                 self.user_input.temps[0] - self.EPS,
-                self.user_input.MAX_a + self.EPS,
+                self.user_input.confirmed_a,
                 self.user_input.MIN_VOL_M3 - self.EPS
             )
 
