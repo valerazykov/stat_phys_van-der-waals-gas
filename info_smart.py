@@ -129,12 +129,16 @@ class Info:
                           2, round(self.coor[3] / 5)))
         text_surface = self.my_font.render('Совершённая работа', True, 'Black')
         self.screen.blit(text_surface, (
-        self.coor[0] + round(1 / 12 * self.coor[2]),
+            self.coor[0] + round(
+                0.5 * self.coor[
+                    2] / 2) - text_surface.get_rect().width // 2,
         self.coor[1] + round(1 / 32 * self.coor[3])))
         text_surface = self.my_font.render('Получ./отд. кол-во тепл.', True,
                                            'Black')
         self.screen.blit(text_surface, (
-        self.coor[0] + round(0.51 * self.coor[2]),
+            self.coor[0] + round(0.5 * self.coor[2]) + round(
+                0.5 * self.coor[
+                    2] / 2) - text_surface.get_rect().width // 2,
         self.coor[1] + round(1 / 32 * self.coor[3])))
         text_surface = self.my_font2.render(str(work) + ' ДЖ', True, 'Black')
         self.screen.blit(text_surface, (
