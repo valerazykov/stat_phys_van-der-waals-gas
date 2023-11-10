@@ -145,11 +145,6 @@ class DemoScreen:
                 self.user_input.MIN_VOL_M3 - self.EPS
             )
 
-            self.user_input.apply_button2.disable()
-            self.user_input.apply_button2.inactiveColour = WHITE
-            self.user_input.apply_button3.disable()
-            self.user_input.apply_button3.inactiveColour = WHITE
-
         def on_click2():
             if self.user_input.prev_confirmed_T is not None:
                 self.prev_temp = self.user_input.prev_confirmed_T
@@ -282,6 +277,17 @@ class DemoScreen:
                 self.vol_arr[self.iteration_step],
                 self.press_arr[self.iteration_step]
             )
+
+            if self.iteration_step < self.N_STEPS - 1:
+                cur_press = self.press_arr[self.iteration_step]
+                next_press = self.press_arr[self.iteration_step + 1]
+                if abs(cur_press - next_press) < self.EPS:
+                    self.mode_press = 0
+                elif cur_press < next_press:
+                    self.mode_press = 1
+                else:
+                    self.mode_press = -1
+
             self.piston.draw(
                 self.temp_arr[self.iteration_step],
                 self.vol_arr[self.iteration_step],

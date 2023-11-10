@@ -361,6 +361,8 @@ class UserInput:
         self._update_temp()
         self._update_press_vol()
         self.apply_button1.disable()
+        self.apply_button2.disable()
+        self.apply_button3.disable()
 
         self.on_click1()
 
