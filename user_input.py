@@ -9,6 +9,7 @@ import physics as phys
 
 WHITE = (255, 255, 255)
 BUTTON_COLOR = (240, 240, 240)
+BLACK = (0, 0, 0)
 
 
 class UserInput:
@@ -19,6 +20,8 @@ class UserInput:
     MAX_b = 60
     MIN_TEMP = 0.1
     MAX_TEMP = phys.MAX_TEMP
+    BORDER_WIDTH = 2
+    INTERNAL_LINE_WIDTH = 1
 
     def __init__(self, win, x, y, width, height,
                  big_font_size=30, middle_font_size=25, little_font_size=23,
@@ -209,6 +212,8 @@ class UserInput:
         self.apply_button1_was_disabled = True
         self.apply_button2_was_disabled = True
         self.apply_button3_was_disabled = True
+
+        self.border_rect = pygame.Rect(x, y, width, height)
 
     def _update_temp(self):
         if self.T_dropdown is not None:
@@ -484,6 +489,16 @@ class UserInput:
 
         self._real_gas_check()
         self._temp_check()
+
+        pygame.draw.rect(self.win, BLACK, self.border_rect, self.BORDER_WIDTH)
+        pygame.draw.line(self.win, BLACK,
+                         (self.x, self.y + 4 * self.line_height),
+                         (self.width, self.y + 4 * self.line_height),
+                         width=self.INTERNAL_LINE_WIDTH)
+        pygame.draw.line(self.win, BLACK,
+                         (self.x, self.y + 6 * self.line_height),
+                         (self.width, self.y + 6 * self.line_height),
+                         width=self.INTERNAL_LINE_WIDTH)
 
     def disable(self):
         self.real_gas_dropdown.disable()

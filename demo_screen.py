@@ -15,6 +15,7 @@ import physics as phys
 WHITE = (255, 255, 255)
 BUTTON_COLOR = (240, 240, 240)
 BUTTON_FONT_SIZE = 36
+BORGER_WIDTH = 2
 
 
 class DemoScreen:
@@ -41,26 +42,32 @@ class DemoScreen:
                                   pressedColour=self.bg_color,
                                   text="Назад", fontSize=BUTTON_FONT_SIZE)
 
-        self.user_input = UserInput(self.screen, 0, 0, width // 4, height // 2)
+        self.user_input = UserInput(self.screen, 0, height // 25,
+                                    width // 4, height // 2)
         self.pv_graph = PVGraph(self.screen, width // 4, 0, width * 3 // 4,
                                 height * 2 // 3,
                                 *self.user_input.get_confirmed_a_b_SI(),
                                 self.user_input.temps,
                                 (self.user_input.MIN_VOL,
                                  self.user_input.MAX_VOL))
+        alpha = 0.6
+        betta = 0.42
         self.piston = Piston(
-            (0, round(height * 0.55), width // 3, round(height * (1 - 0.55))),
+            (round(width * betta) - width * 10 // 30 + BORGER_WIDTH,
+             round(height * alpha),
+             width * 10 // 30, round(height * (1 - alpha))),
             (self.user_input.temps[0] - self.EPS,
              self.user_input.temps[-1] + self.EPS),
             (self.user_input.MIN_VOL - self.EPS,
              self.user_input.MAX_VOL + self.EPS),
             (self.user_input.MIN_TEMP_LIST_p - self.EPS,
              self.user_input.MAX_TEMP_LIST_p + self.EPS),
-            self.screen
+            self.screen,
+            temps=self.user_input.temps
         )
         self.info = Info_smart(
-            (round(width * 0.42), round(height * 0.55),
-             round(width * 0.4), round(height * (1 - 0.55))),
+            (round(width * betta), round(height * alpha),
+             round(width * 0.4), round(height * (1 - alpha))),
             self.screen,
             round(phys.energy(
                 self.user_input.get_confirmed_temp(),
@@ -128,7 +135,8 @@ class DemoScreen:
                  self.user_input.MAX_VOL + self.EPS),
                 (self.user_input.MIN_TEMP_LIST_p - self.EPS,
                  self.user_input.MAX_TEMP_LIST_p + self.EPS),
-                self.screen
+                self.screen,
+                temps=self.user_input.temps
             )
 
             self.info.reinit(
