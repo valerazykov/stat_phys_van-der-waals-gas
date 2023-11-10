@@ -142,7 +142,7 @@ class Piston:
                 self.k *= -1
         
         for t in range(5):
-            text_surface = self.my_font.render(str(self.temps[t]) + ' K',
+            text_surface = self.my_font.render(str(round(self.temps[t] * 10) / 10) + ' K',
                                                True, 'Black')
             self.screen.blit(text_surface,
                              (self.coor[0] + round(0.85 * self.coor[2]),
