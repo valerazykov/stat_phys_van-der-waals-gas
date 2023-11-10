@@ -133,7 +133,7 @@ class Info:
                 0.5 * self.coor[
                     2] / 2) - text_surface.get_rect().width // 2,
         self.coor[1] + round(1 / 32 * self.coor[3])))
-        text_surface = self.my_font.render('Получ./отд. кол-во тепл.', True,
+        text_surface = self.my_font.render('Полученное кол-во тепл.', True,
                                            'Black')
         self.screen.blit(text_surface, (
             self.coor[0] + round(0.5 * self.coor[2]) + round(
