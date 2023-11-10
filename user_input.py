@@ -499,6 +499,10 @@ class UserInput:
                          (self.x, self.y + 6 * self.line_height),
                          (self.width, self.y + 6 * self.line_height),
                          width=self.INTERNAL_LINE_WIDTH)
+        pygame.draw.line(self.win, BLACK,
+                         (self.x, self.y + 9 * self.line_height),
+                         (self.width, self.y + 9 * self.line_height),
+                         width=self.INTERNAL_LINE_WIDTH)
 
     def disable(self):
         self.real_gas_dropdown.disable()
