@@ -202,7 +202,7 @@ def calc_borders_for_press_vol_temp_list(a, b, temp_left, temp_right):
 
     vol = symbols("vol", real=True)
     expr = R * temp_right / (vol - b) - a / vol ** 2 - min_p
-    max_vol = max(solve(expr, vol))
+    max_vol = 2 * max(solve(expr, vol))
 
     min_p = calc_min_press_for_temp_list(a, b, temp_left, min_vol, max_vol)
     max_p = calc_max_press_for_temp_list(a, b, temp_right, min_vol, max_vol)
