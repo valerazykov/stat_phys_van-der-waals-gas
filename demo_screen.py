@@ -34,7 +34,8 @@ class DemoScreen:
             self.app.active_screen = self.app.menu_screen
 
         self.back_button = Button(self.screen,
-                                  width * x_scale, height * y_scale,
+                                  width * x_scale - BORGER_WIDTH,
+                                  height * y_scale - BORGER_WIDTH,
                                   round(width * (1 - x_scale)),
                                   round(height * (1 - y_scale)),
                                   onClick=back_button_on_click,
@@ -42,9 +43,10 @@ class DemoScreen:
                                   pressedColour=self.bg_color,
                                   text="Назад", fontSize=BUTTON_FONT_SIZE)
 
-        self.user_input = UserInput(self.screen, 0, height // 25,
+        self.user_input = UserInput(self.screen, BORGER_WIDTH, height // 25,
                                     width // 4, height // 2)
-        self.pv_graph = PVGraph(self.screen, width // 4, 0, width * 3 // 4,
+        self.pv_graph = PVGraph(self.screen, width // 4 + BORGER_WIDTH,
+                                0, width * 3 // 4,
                                 height * 2 // 3,
                                 *self.user_input.get_confirmed_a_b_SI(),
                                 self.user_input.temps,
@@ -53,8 +55,8 @@ class DemoScreen:
         alpha = 0.6
         betta = 0.42
         self.piston = Piston(
-            (round(width * betta) - width * 10 // 30 + BORGER_WIDTH,
-             round(height * alpha),
+            (round(width * betta) - width * 10 // 30,
+             round(height * alpha) - BORGER_WIDTH,
              width * 10 // 30, round(height * (1 - alpha))),
             (self.user_input.temps[0] - self.EPS,
              self.user_input.temps[-1] + self.EPS),
@@ -66,8 +68,9 @@ class DemoScreen:
             temps=self.user_input.temps
         )
         self.info = Info_smart(
-            (round(width * betta), round(height * alpha),
-             round(width * 0.4), round(height * (1 - alpha))),
+            (round(width * betta) + width // 20,
+             round(height * alpha) - BORGER_WIDTH,
+             width // 3, round(height * (1 - alpha))),
             self.screen,
             round(phys.energy(
                 self.user_input.get_confirmed_temp(),
@@ -127,8 +130,9 @@ class DemoScreen:
                                  (self.user_input.MIN_VOL,
                                   self.user_input.MAX_VOL))
             self.piston.reinit(
-                (0, round(height * 0.55),
-                 width // 3, round(height * (1 - 0.55))),
+                (round(width * betta) - width * 10 // 30,
+                 round(height * alpha) - BORGER_WIDTH,
+                 width * 10 // 30, round(height * (1 - alpha))),
                 (self.user_input.temps[0] - self.EPS,
                  self.user_input.temps[-1] + self.EPS),
                 (self.user_input.MIN_VOL - self.EPS,
@@ -140,8 +144,9 @@ class DemoScreen:
             )
 
             self.info.reinit(
-                (round(width * 0.42), round(height * 0.55),
-                 round(width * 0.4), round(height * (1 - 0.55))),
+                (round(width * betta) + width // 20,
+                 round(height * alpha) - BORGER_WIDTH,
+                 width // 3, round(height * (1 - alpha))),
                 self.screen,
                 round(phys.energy(
                     self.user_input.get_confirmed_temp(),
