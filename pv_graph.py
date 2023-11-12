@@ -28,10 +28,10 @@ class PVGraph:
         for i, temp in enumerate(temps_list):
             func = np.vectorize(
                 lambda vol: math.log(phys.p_to_atm(
-                    phys.calc_press(temp, phys.vol_to_m3(vol), a, b)))
+                    phys.calc_press(temp, phys.vol_to_m3(vol), a, b)), 10)
             )
             self.isotherms[i] = func(self.vols)
-            self.log_vols = np.log(self.vols)
+            self.log_vols = np.log10(self.vols)
 
     def __init__(
             self, win, x, y, width, height,
@@ -69,12 +69,12 @@ class PVGraph:
             color = "green" if is_current else "black"
             ax.plot(self.log_vols, self.isotherms[i], color=color)
 
-        ax.scatter([math.log(vol)], [math.log(press)], color="red")
+        ax.scatter([math.log(vol, 10)], [math.log(press, 10)], color="red")
 
         ax.set_title("pV-график", fontsize=self.TITLE_FONT_SIZE)
-        ax.set_xlabel("ln(V)", labelpad=self.X_LABEL_PAD,
+        ax.set_xlabel("lg(V)", labelpad=self.X_LABEL_PAD,
                       fontsize=self.AX_FONT_SIZE, loc="right")
-        ax.set_ylabel("ln(p)", labelpad=self.Y_LABEL_PAD,
+        ax.set_ylabel("lg(p)", labelpad=self.Y_LABEL_PAD,
                       fontsize=self.AX_FONT_SIZE, loc="top")
         ax.grid(True, linewidth=1)
 
