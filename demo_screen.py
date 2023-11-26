@@ -71,6 +71,9 @@ class DemoScreen:
             (round(width * betta),
              round(height * alpha) - BORGER_WIDTH,
              width * 0.4, round(height * (1 - alpha))),
+            (round(width * betta) + width * 0.4,
+             round(height * alpha) - BORGER_WIDTH,
+             width * 0.2, height * 0.2),
             self.screen,
             round(phys.energy(
                 self.user_input.get_confirmed_temp(),
@@ -79,7 +82,8 @@ class DemoScreen:
             )),
             self.user_input.temps[0] - self.EPS,
             self.user_input.MAX_a + self.EPS,
-            self.user_input.MIN_VOL_M3 - self.EPS
+            self.user_input.MIN_VOL_M3 - self.EPS,
+            "", ""
         )
 
         self.ITERATION_TIME = 4
@@ -147,6 +151,9 @@ class DemoScreen:
                 (round(width * betta),
                  round(height * alpha) - BORGER_WIDTH,
                  width * 0.4, round(height * (1 - alpha))),
+                (round(width * betta) + width * 0.4,
+                 round(height * alpha) - BORGER_WIDTH,
+                 width * 0.2, height * 0.2),
                 self.screen,
                 round(phys.energy(
                     self.user_input.get_confirmed_temp(),
@@ -154,8 +161,9 @@ class DemoScreen:
                     self.user_input.get_confirmed_a_b_SI()[0]
                 )),
                 self.user_input.temps[0] - self.EPS,
-                self.user_input.confirmed_a,
-                self.user_input.MIN_VOL_M3 - self.EPS
+                self.user_input.MAX_a + self.EPS,
+                self.user_input.MIN_VOL_M3 - self.EPS,
+                "", ""
             )
 
         def on_click2():
@@ -210,7 +218,7 @@ class DemoScreen:
             self.user_input.disable()
             self.time_prev_step_started = time()
             self.info.next_iteration(self.work, self.energy_change,
-                                     self.warmth_change)
+                                     self.warmth_change, "", "")
 
         def on_click3():
             self.prev_temp = self.user_input.confirmed_T
@@ -263,7 +271,7 @@ class DemoScreen:
             self.user_input.disable()
             self.time_prev_step_started = time()
             self.info.next_iteration(self.work, self.energy_change,
-                                     self.warmth_change)
+                                     self.warmth_change, "", "")
 
         self.user_input.set_on_click_funcs(on_click1, on_click2, on_click3)
         self.iteration_step = 0

@@ -1,5 +1,6 @@
 import pygame
 import sys
+import webbrowser
 
 from button import Button
 from screen_rescale_funcs import x_rs, y_rs
@@ -47,6 +48,8 @@ class MenuScreen:
             if button.rect.collidepoint(mouse_position):
                 if index == 0:
                     self.app.active_screen = self.app.demo_screen
+                if index == 1:
+                    webbrowser.open("theory.pdf")
                 if index == 2:
                     self.app.active_screen = self.app.authors_screen
                 elif index == 3:
