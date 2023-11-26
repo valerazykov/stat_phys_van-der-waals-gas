@@ -79,7 +79,10 @@ class PVGraph:
                        color="green")
             ax.text(math.log(point_from[0], 10),
                     math.log(point_from[1], 10), point_from_name,
-                    fontsize=self.POINTS_FONTSIZE)
+                    fontsize=self.POINTS_FONTSIZE
+                    #,horizontalalignment='left',
+                    #verticalalignment='bottom'
+                    )
 
         if point_to is not None and point_to_name is not None:
             ax.scatter([math.log(point_to[0], 10)],
@@ -87,7 +90,10 @@ class PVGraph:
                        color="green")
             ax.text(math.log(point_to[0], 10),
                     math.log(point_to[1], 10), point_to_name,
-                    fontsize=self.POINTS_FONTSIZE)
+                    fontsize=self.POINTS_FONTSIZE
+                    #,horizontalalignment='right',
+                    #verticalalignment='top'
+                    )
 
         ax.scatter([math.log(vol, 10)], [math.log(press, 10)], color="red")
 

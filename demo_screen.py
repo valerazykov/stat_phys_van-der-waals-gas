@@ -306,9 +306,18 @@ class DemoScreen:
         self.user_input.update(events, need_upd_all_widgets=False)
 
         if not self.is_iteration:
-            self.pv_graph.draw(cur_temp_ind, self.vol, self.press,
-                               point_from=(self.vol, self.press),
-                               point_from_name=str(self.iteration_num))
+            if self.iteration_num == 0:
+                self.pv_graph.draw(cur_temp_ind, self.vol, self.press,
+                                   point_from=(self.vol, self.press),
+                                   point_from_name=str(self.iteration_num))
+            else:
+                self.pv_graph.draw(cur_temp_ind, self.vol, self.press,
+                                   point_from=(
+                                   self.vol_arr[0], self.press_arr[0]),
+                                   point_to=(
+                                   self.vol_arr[-1], self.press_arr[-1]),
+                                   point_from_name=str(self.iteration_num - 1),
+                                   point_to_name=str(self.iteration_num))
             self.piston.draw(self.temp, self.vol, self.press, 0, 0)
             self.info.take_picture(self.N_STEPS - 1)
         else:
