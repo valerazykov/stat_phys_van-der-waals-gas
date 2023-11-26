@@ -146,8 +146,8 @@ class Info:
                          (self.coor[0] + round(self.coor[2] / 2), self.coor[1],
                           2, round(self.coor[3] / 5)))
         pygame.draw.rect(self.screen, (0, 0, 0),
-                         (self.coor2[0], self.coor2[1] + round(self.coor2[2] / 2),
-                          self.coor2[3], 2))
+                         (self.coor2[0], self.coor2[1] + round(self.coor2[3] / 2),
+                          self.coor2[2], 2))
         text_surface = self.my_font.render('Внутренняя энергия', True, 'Black')
         if flag > 200:
             self.screen.blit(text_surface, (
