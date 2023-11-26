@@ -15,8 +15,10 @@ WHITE = (255, 255, 255)
 class PVGraph:
     AX_FONT_SIZE = 15
     TITLE_FONT_SIZE = 20
-    X_LABEL_PAD = 10
+    X_LABEL_PAD = 12
     Y_LABEL_PAD = 0
+    TICKS_FONTSIZE = 15
+    POINTS_FONTSIZE = 15
 
     def _find_isotherms(
             self, a, b, temps_list, vol_limits, n_points=1000
@@ -59,7 +61,9 @@ class PVGraph:
             a, b, temps_list, vol_limits, n_points
         )
 
-    def draw(self, temp_ind, vol, press):
+    def draw(self, temp_ind, vol, press,
+             point_from_name=None, point_from=None,
+             point_to_name=None, point_to=None):
         fig, ax = plt.subplots(
             1, 1, figsize=(self.width // 100, self.height // 100), dpi=100
         )
@@ -69,6 +73,22 @@ class PVGraph:
             color = "green" if is_current else "black"
             ax.plot(self.log_vols, self.isotherms[i], color=color)
 
+        if point_from is not None and point_from_name is not None:
+            ax.scatter([math.log(point_from[0], 10)],
+                       [math.log(point_from[1], 10)],
+                       color="green")
+            ax.text(math.log(point_from[0], 10),
+                    math.log(point_from[1], 10), point_from_name,
+                    fontsize=self.POINTS_FONTSIZE)
+
+        if point_to is not None and point_to_name is not None:
+            ax.scatter([math.log(point_to[0], 10)],
+                       [math.log(point_to[1], 10)],
+                       color="green")
+            ax.text(math.log(point_to[0], 10),
+                    math.log(point_to[1], 10), point_to_name,
+                    fontsize=self.POINTS_FONTSIZE)
+
         ax.scatter([math.log(vol, 10)], [math.log(press, 10)], color="red")
 
         ax.set_title("pV-график", fontsize=self.TITLE_FONT_SIZE)
@@ -77,6 +97,16 @@ class PVGraph:
         ax.set_ylabel("lg(p)", labelpad=self.Y_LABEL_PAD,
                       fontsize=self.AX_FONT_SIZE, loc="top")
         ax.grid(True, linewidth=1)
+
+        plt.subplots_adjust(left=0.07,
+                            bottom=0.1,
+                            right=0.97,
+                            top=0.9,
+                            wspace=0,
+                            hspace=0)
+
+        plt.xticks(fontsize=self.TICKS_FONTSIZE)
+        plt.yticks(fontsize=self.TICKS_FONTSIZE)
 
         fig.canvas.draw()
         self.win.blit(fig, (self.x, self.y))

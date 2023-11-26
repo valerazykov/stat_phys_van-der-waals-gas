@@ -493,15 +493,15 @@ class UserInput:
         pygame.draw.rect(self.win, BLACK, self.border_rect, self.BORDER_WIDTH)
         pygame.draw.line(self.win, BLACK,
                          (self.x, self.y + 4 * self.line_height),
-                         (self.width, self.y + 4 * self.line_height),
+                         (self.x + self.width, self.y + 4 * self.line_height),
                          width=self.INTERNAL_LINE_WIDTH)
         pygame.draw.line(self.win, BLACK,
                          (self.x, self.y + 6 * self.line_height),
-                         (self.width, self.y + 6 * self.line_height),
+                         (self.x + self.width, self.y + 6 * self.line_height),
                          width=self.INTERNAL_LINE_WIDTH)
         pygame.draw.line(self.win, BLACK,
                          (self.x, self.y + 9 * self.line_height),
-                         (self.width, self.y + 9 * self.line_height),
+                         (self.x + self.width, self.y + 9 * self.line_height),
                          width=self.INTERNAL_LINE_WIDTH)
 
     def disable(self):

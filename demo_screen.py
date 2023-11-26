@@ -43,9 +43,11 @@ class DemoScreen:
                                   pressedColour=self.bg_color,
                                   text="Назад", fontSize=BUTTON_FONT_SIZE)
 
-        self.user_input = UserInput(self.screen, BORGER_WIDTH, height // 25,
+        self.user_input = UserInput(self.screen, BORGER_WIDTH + width // 50,
+                                    height // 25,
                                     width // 4, height // 2)
-        self.pv_graph = PVGraph(self.screen, width // 4 + BORGER_WIDTH,
+        self.pv_graph = PVGraph(self.screen,
+                                width // 4 + BORGER_WIDTH + width // 50,
                                 0, width * 3 // 4,
                                 height * 2 // 3,
                                 *self.user_input.get_confirmed_a_b_SI(),
@@ -53,11 +55,12 @@ class DemoScreen:
                                 (self.user_input.MIN_VOL,
                                  self.user_input.MAX_VOL))
         alpha = 0.6
-        betta = 0.42
+        bottom_margin_coef = 0.94
         self.piston = Piston(
-            (round(width * betta) - width * 11 // 30,
+            (BORGER_WIDTH + width // 50,
              round(height * alpha) - BORGER_WIDTH,
-             width * 10 // 30, round(height * (1 - alpha))),
+             width * 10 // 30,
+             round(height * (1 - alpha) * bottom_margin_coef)),
             (self.user_input.temps[0] - self.EPS,
              self.user_input.temps[-1] + self.EPS),
             (self.user_input.MIN_VOL - self.EPS,
@@ -68,12 +71,12 @@ class DemoScreen:
             temps=self.user_input.temps
         )
         self.info = Info_smart(
-            (round(width * betta),
+            (BORGER_WIDTH + width // 50 + width * 11 // 30,
              round(height * alpha) - BORGER_WIDTH,
-             width * 0.4, round(height * (1 - alpha))),
-            (round(width * betta) + width * 0.4,
+             width * 0.4, round(height * (1 - alpha)) * bottom_margin_coef),
+            (BORGER_WIDTH + width // 50 + width * 11 // 30 + width * 0.43,
              round(height * alpha) - BORGER_WIDTH,
-             width * 0.2, height * 0.2),
+             width * 0.15, height * 0.2),
             self.screen,
             round(phys.energy(
                 self.user_input.get_confirmed_temp(),
@@ -83,7 +86,7 @@ class DemoScreen:
             self.user_input.temps[0] - self.EPS,
             self.user_input.MAX_a + self.EPS,
             self.user_input.MIN_VOL_M3 - self.EPS,
-            "", ""
+            "", "0"
         )
 
         self.ITERATION_TIME = 4
@@ -115,6 +118,8 @@ class DemoScreen:
         self.vol_arr = np.zeros(self.N_STEPS)
         self.press_arr = np.zeros(self.N_STEPS)
 
+        self.iteration_num = 0
+
         def on_click1():
             self.a, self.b = self.user_input.get_confirmed_a_b_SI()
 
@@ -129,14 +134,17 @@ class DemoScreen:
             self.work = 0
             self.warmth_change = 0
 
+            self.iteration_num = 0
+
             self.pv_graph.reinit(*self.user_input.get_confirmed_a_b_SI(),
                                  self.user_input.temps,
                                  (self.user_input.MIN_VOL,
                                   self.user_input.MAX_VOL))
             self.piston.reinit(
-                (round(width * betta) - width * 11 // 30,
+                (BORGER_WIDTH + width // 50,
                  round(height * alpha) - BORGER_WIDTH,
-                 width * 10 // 30, round(height * (1 - alpha))),
+                 width * 10 // 30,
+                 round(height * (1 - alpha) * bottom_margin_coef)),
                 (self.user_input.temps[0] - self.EPS,
                  self.user_input.temps[-1] + self.EPS),
                 (self.user_input.MIN_VOL - self.EPS,
@@ -148,12 +156,13 @@ class DemoScreen:
             )
 
             self.info.reinit(
-                (round(width * betta),
+                (BORGER_WIDTH + width // 50 + width * 11 // 30,
                  round(height * alpha) - BORGER_WIDTH,
-                 width * 0.4, round(height * (1 - alpha))),
-                (round(width * betta) + width * 0.4,
+                 width * 0.4,
+                 round(height * (1 - alpha)) * bottom_margin_coef),
+                (BORGER_WIDTH + width // 50 + width * 11 // 30 + width * 0.43,
                  round(height * alpha) - BORGER_WIDTH,
-                 width * 0.2, height * 0.2),
+                 width * 0.15, height * 0.2),
                 self.screen,
                 round(phys.energy(
                     self.user_input.get_confirmed_temp(),
@@ -163,7 +172,7 @@ class DemoScreen:
                 self.user_input.temps[0] - self.EPS,
                 self.user_input.MAX_a + self.EPS,
                 self.user_input.MIN_VOL_M3 - self.EPS,
-                "", ""
+                "", "0"
             )
 
         def on_click2():
@@ -190,6 +199,8 @@ class DemoScreen:
             self.warmth_change = round(phys.warmth_change(temps, vols,
                                                           self.a, self.b))
             # self.entropy_change = phys.energy_change(temps, vols, self.a)
+
+            self.iteration_num += 1
 
             if self.temp > self.prev_temp:
                 self.mode_temp = 1
@@ -218,7 +229,9 @@ class DemoScreen:
             self.user_input.disable()
             self.time_prev_step_started = time()
             self.info.next_iteration(self.work, self.energy_change,
-                                     self.warmth_change, "", "")
+                                     self.warmth_change,
+                                     str(self.iteration_num - 1),
+                                     str(self.iteration_num))
 
         def on_click3():
             self.prev_temp = self.user_input.confirmed_T
@@ -244,6 +257,8 @@ class DemoScreen:
             self.warmth_change = round(phys.warmth_change(temps, vols, self.a,
                                                           self.b))
             # self.entropy_change = phys.energy_change(temps, vols, self.a)
+
+            self.iteration_num += 1
 
             self.mode_temp = 0
 
@@ -271,7 +286,9 @@ class DemoScreen:
             self.user_input.disable()
             self.time_prev_step_started = time()
             self.info.next_iteration(self.work, self.energy_change,
-                                     self.warmth_change, "", "")
+                                     self.warmth_change,
+                                     str(self.iteration_num - 1),
+                                     str(self.iteration_num))
 
         self.user_input.set_on_click_funcs(on_click1, on_click2, on_click3)
         self.iteration_step = 0
@@ -289,14 +306,20 @@ class DemoScreen:
         self.user_input.update(events, need_upd_all_widgets=False)
 
         if not self.is_iteration:
-            self.pv_graph.draw(cur_temp_ind, self.vol, self.press)
+            self.pv_graph.draw(cur_temp_ind, self.vol, self.press,
+                               point_from=(self.vol, self.press),
+                               point_from_name=str(self.iteration_num))
             self.piston.draw(self.temp, self.vol, self.press, 0, 0)
             self.info.take_picture(self.N_STEPS - 1)
         else:
             self.pv_graph.draw(
                 cur_temp_ind,
                 self.vol_arr[self.iteration_step],
-                self.press_arr[self.iteration_step]
+                self.press_arr[self.iteration_step],
+                point_from=(self.vol_arr[0], self.press_arr[0]),
+                point_to=(self.vol_arr[-1], self.press_arr[-1]),
+                point_from_name=str(self.iteration_num - 1),
+                point_to_name=str(self.iteration_num)
             )
 
             if self.iteration_step < self.N_STEPS - 1:
