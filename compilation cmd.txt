@@ -1,0 +1,1 @@
+pyinstaller --noconsole --onefile --name "Van_der_Waals_gas" main.py
